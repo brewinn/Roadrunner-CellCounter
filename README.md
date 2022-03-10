@@ -74,7 +74,7 @@ Below is a list of currently implemented features:
 
 - [ ] Dataset Reading
 - [ ] Preprocessing of datasets
-- ...and much more
+- [ ] ...and much more
 
 ## How to Contribute
 
