@@ -11,6 +11,7 @@ with the set of points designating the cells in the image.
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [Development](#development)
 - [Credits](#credits)
 - [License](#license)
 - [Features](#features)
@@ -25,6 +26,30 @@ To be decided.
 ## Usage
 
 None just yet.
+
+## Development
+
+This section will give a reference to some development guidelines for the project.
+
+### Git
+
+Git should be used to track changes in code. While not every single change will
+need its own commit, major changes need to be committed separately. Be sure to include an 
+[informative commit message](https://www.freecodecamp.org/news/writing-good-commit-messages-a-practical-guide/)!
+
+### Project Structure
+
+Python has its own way of including code from other files. To make it as easy
+as possible to install and use, we'll make our project code into a package.
+A reference for the structure can be found in this article: 
+[The optimal python project structure](https://awaywithideas.com/the-optimal-python-project-structure/)
+
+### Code Formatting
+
+To give a consistent formatting style to the code, we'll make use of [Black](https://github.com/psf/black).
+One way to install *Black* is via `pip install black`. Once installed, you can
+run *Black* on a single file `black FILE` or on an entire directory (including
+subdirectories) via `black DIRECTORY-TO-FORMAT`.
 
 ## Credits
 
@@ -47,8 +72,8 @@ Below is a list of currently implemented features:
 
 ## To-do
 
-- [] Dataset Reading
-- [] Preprocessing of datasets
+- [ ] Dataset Reading
+- [ ] Preprocessing of datasets
 - ...and much more
 
 ## How to Contribute
