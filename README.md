@@ -51,6 +51,14 @@ One way to install *Black* is via `pip install black`. Once installed, you can
 run *Black* on a single file `black FILE` or on an entire directory (including
 subdirectories) via `black DIRECTORY-TO-FORMAT`.
 
+### Testing
+
+Project code should be made via Test-Driven Development (TDD). TDD is a broad
+topic, and you should look into it if you have the time. For our purposes, this
+means that tests should be written *before* the relevant code is added, and
+then the code modified to make the test pass. Check the discord for a TDD
+tutorial if you need an introduction.
+
 ## Credits
 
 The original project developers include Brendan Winn, Amber Beserra, Michael
