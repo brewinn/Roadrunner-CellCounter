@@ -70,7 +70,7 @@ providing the inspiration and data for the project.
 
 ## License
 
-MIT: <https://rem.mit-license.org>
+MIT: <https://mit-license.org>
 
 ## Features
 
