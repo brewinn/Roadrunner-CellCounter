@@ -3,3 +3,6 @@ __pycache__/
 
 # Ignore compiled python files
 *.py[cod]
+
+# Ignore files associated with local pip install
+cell_counter.egg-info
