@@ -21,11 +21,15 @@ with the set of points designating the cells in the image.
 
 ## Installation
 
-To be decided.
+To install, navigate to the project's root directory, and run `pip install --editable .`.
+
+### Removal
+
+To uninstall, run `pip uninstall cell_counter`
 
 ## Usage
 
-None just yet.
+Only a few tests have been implemented so far. They may be run with `python3 tests/test_import_tiff.py`.
 
 ## Development
 
