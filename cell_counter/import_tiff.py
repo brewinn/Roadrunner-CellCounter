@@ -9,7 +9,7 @@ import cv2
 
 # Take in the path to the file, and return a List of arrays representing the
 #  image.
-def tiff_to_array(path:str)->List[np.array]:
+def tiff_to_array(path: str) -> List[np.array]:
     # The following string is a 'docstring',
     # it can be seen with help(tiff_to_array)
     """
@@ -27,6 +27,5 @@ def tiff_to_array(path:str)->List[np.array]:
 
     # Read in the tiff and return its associated arrays
     images = []
-    _, images = cv2.imreadmulti(mats = images, filename = path, flags = cv2.IMREAD_GRAYSCALE)
+    _, images = cv2.imreadmulti(mats=images, filename=path, flags=cv2.IMREAD_GRAYSCALE)
     return images
-
