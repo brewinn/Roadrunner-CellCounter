@@ -1,5 +1,4 @@
-# Roadrunner-CellCounter
-A cell counter using computer vision techniques. 
+# Roadrunner-CellCounter A cell counter using computer vision techniques. 
 
 ## Description
 
@@ -21,39 +20,44 @@ with the set of points designating the cells in the image.
 
 ## Installation
 
-To install, navigate to the project's root directory, and run `pip install --editable .`.
+To install, navigate to the project's root directory, and run `pip install
+--editable .`.
 
 ### Removal
 
-To uninstall, run `pip uninstall cell_counter`
+To uninstall, run `pip uninstall cell_counter`.
 
 ## Usage
 
-Only a few tests have been implemented so far. They may be run with `python3 tests/test_import_tiff.py`.
+Only a few tests have been implemented so far. They may be run with `python3
+tests/test_import_tiff.py`.
 
 ## Development
 
-This section will give a reference to some development guidelines for the project.
+This section will give a reference to some development guidelines for the
+project.
 
 ### Git
 
 Git should be used to track changes in code. While not every single change will
-need its own commit, major changes need to be committed separately. Be sure to include an 
+need its own commit, major changes need to be committed separately. Be sure to
+include an 
 [informative commit message](https://www.freecodecamp.org/news/writing-good-commit-messages-a-practical-guide/)!
 
 ### Project Structure
 
 Python has its own way of including code from other files. To make it as easy
-as possible to install and use, we'll make our project code into a package.
-A reference for the structure can be found in this article: 
+as possible to install and use, we'll make our project code into a package. A
+reference for the structure can be found in this article: 
 [The optimal python project structure](https://awaywithideas.com/the-optimal-python-project-structure/)
 
 ### Code Formatting
 
-To give a consistent formatting style to the code, we'll make use of [Black](https://github.com/psf/black).
-One way to install *Black* is via `pip install black`. Once installed, you can
-run *Black* on a single file `black FILE` or on an entire directory (including
-subdirectories) via `black DIRECTORY-TO-FORMAT`.
+To give a consistent formatting style to the code, we'll make use of
+[Black](https://github.com/psf/black). One way to install *Black* is via `pip
+install black`. Once installed, you can run *Black* on a single file `black
+FILE` or on an entire directory (including subdirectories) via `black
+DIRECTORY-TO-FORMAT`.
 
 ### Testing
 
