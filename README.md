@@ -34,7 +34,12 @@ tests/test_import_tiff.py`.
 
 ## Development
 
-This section will give a reference to some development guidelines for the
+Initial development will utilize a two-dimensional synthetic cell dataset
+[Synthetic cells](https://bbbc.broadinstitute.org/BBBC005/) to provide an
+abundance of training and testing instances for greater ease of development.
+Once either the initial methods have been satisfactorily implemented or the
+project deadline passes, the focus will return to more realistic datasets.
+The rest of this section will give a reference to some development guidelines for the
 project.
 
 ### Git
@@ -64,8 +69,8 @@ DIRECTORY-TO-FORMAT`.
 Project code should be made via Test-Driven Development (TDD). TDD is a broad
 topic, and you should look into it if you have the time. For our purposes, this
 means that tests should be written *before* the relevant code is added, and
-then the code modified to make the test pass. Check the discord for a TDD
-tutorial if you need an introduction.
+then the code modified to make the test pass. Send a message on discord if you
+need an introduction.
 
 ## Credits
 
