@@ -15,6 +15,12 @@ class TestImportTiff(unittest.TestCase):
         test_dir = os.path.dirname(__file__)
         path = test_dir + "/../resources/multipage_tiff_example.tif"
         self.images = tiff_to_array(path)
+        path = test_dir + "/../resources/simple_tiff_example.TIF"
+        self.single_image = tiff_to_array(path)
+
+    def test_single_tiff(self):
+        self.assertEqual(len(self.single_image), 1)
+        self.assertEqual(self.single_image[0].shape, (520, 696))
 
     def test_tiff_page_count(self):
         self.assertEqual(len(self.images), 10)
