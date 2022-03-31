@@ -35,7 +35,7 @@ tests/test_import_tiff.py`.
 ## Development
 
 Initial development will utilize a two-dimensional synthetic cell dataset
-[Synthetic cells](https://bbbc.broadinstitute.org/BBBC005/) to provide an
+([Synthetic cells](https://bbbc.broadinstitute.org/BBBC005/)) to provide an
 abundance of training and testing instances for greater ease of development.
 Once either the initial methods have been satisfactorily implemented or the
 project deadline passes, the focus will return to more realistic datasets.
