@@ -81,6 +81,10 @@ CS-3793/5233 AI course of UTSA, taught by Dr. Kevin Desai.
 We would also like to thank Dr. Hye Young Lee and team of UT Health for
 providing the inspiration and data for the project.
 
+The dataset used in the initial development is public domain, and available for download from the
+Broad Bioimage Benchmark Collection here: [Synthetic
+Cells](https://bbbc.broadinstitute.org/BBBC005/) 
+
 ## License
 
 MIT: <https://mit-license.org>
