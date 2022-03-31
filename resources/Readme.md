@@ -9,3 +9,5 @@ Provide links or other citations for resources that are not made by you here.
 
 
 [multipage_tiff_example.tif](https://www.nightprogrammer.org/development/multipage-tiff-example-download-test-image-file/)
+
+[simple_tiff_example.TIF](https://bbbc.broadinstitute.org/BBBC005/)
