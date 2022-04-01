@@ -35,7 +35,7 @@ unzipped into the *resources* directory. The structure should look like
 *resources/BBBC005_v1_images/IMAGES*.
 
 Only a few tests have been implemented so far. They may be run with `python3
-tests/test_import_tiff.py`.
+run_tests.py`.
 
 ## Development
 
