@@ -1,4 +1,5 @@
-# Roadrunner-CellCounter A cell counter using computer vision techniques. 
+# Roadrunner-CellCounter 
+A cell counter using computer vision techniques. 
 
 [![Tests](https://github.com/brewinn/Roadrunner-CellCounter/actions/workflows/tests.yml/badge.svg)](https://github.com/brewinn/Roadrunner-CellCounter/actions/workflows/tests.yml)
 ## Description
