@@ -2,9 +2,9 @@
 
 ## Description
 
-A work-in-progress automated cell counter. The program will receive z-stacked
-microscope images as input, and return the cell count as output, possibly along
-with the set of points designating the cells in the image.
+A work-in-progress automated cell counter. Ultimately, the program will receive
+z-stacked microscope images as input, and return the cell count as output,
+possibly along with the set of points designating the cells in the image.
 
 ## Table of Contents
 
