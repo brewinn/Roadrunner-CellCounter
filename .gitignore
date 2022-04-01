@@ -6,3 +6,7 @@ __pycache__/
 
 # Ignore files associated with local pip install
 cell_counter.egg-info
+
+# Ignore dataset
+resources/BBBC005_v1_images/
+resources/BBBC005_v1_images.zip
