@@ -13,7 +13,10 @@ from cell_counter.import_tiff import tiff_to_array
 # For random image selection
 import random
 
-def load_synthetic_dataset(seed = None, num:int=10000, split:float=0.2) -> Tuple[Tuple[List[np.array], List[int]], Tuple[List[np.array], List[int]]]:
+
+def load_synthetic_dataset(
+    seed=None, num: int = 10000, split: float = 0.2
+) -> Tuple[Tuple[List[np.array], List[int]], Tuple[List[np.array], List[int]]]:
     """
     Returns two tuples, containing the images and labels for the training and
     test sets, respectively.
@@ -41,10 +44,14 @@ def load_synthetic_dataset(seed = None, num:int=10000, split:float=0.2) -> Tuple
 
     # Find path to images
     counter_dir = os.path.dirname(__file__)
-    path_to_images = counter_dir + '/../resources/BBBC005_v1_images/'
+    path_to_images = counter_dir + "/../resources/BBBC005_v1_images/"
 
     # List of found tif files
-    image_filenames = [image_file for image_file in os.listdir(path_to_images) if image_file[-4:] == ".TIF"]
+    image_filenames = [
+        image_file
+        for image_file in os.listdir(path_to_images)
+        if image_file[-4:] == ".TIF"
+    ]
 
     # Determine the number of testing and training samples
     num_test = int(num * split)
@@ -58,20 +65,20 @@ def load_synthetic_dataset(seed = None, num:int=10000, split:float=0.2) -> Tuple
     samples = random.sample(image_filenames, num)
 
     # Convert images to arrays, note that we only need the first 'page'
-    #images = [tiff_to_array(path_to_images + sample)[0] for sample in samples]
+    # images = [tiff_to_array(path_to_images + sample)[0] for sample in samples]
     images = []
     for sample in samples:
         images.append(tiff_to_array(path_to_images + sample)[0])
 
     # Find the cell count from the filename
     import re
+
     def extract_label(sample: str) -> int:
-        label = re.match(r'.*_.*_C(\d+)', sample)
+        label = re.match(r".*_.*_C(\d+)", sample)
         if label:
             return int(label.group(1))
         else:
             raise Exception(f"Failed to extract label from {sample}")
-
 
     labels = [extract_label(image) for image in samples]
 
@@ -80,5 +87,5 @@ def load_synthetic_dataset(seed = None, num:int=10000, split:float=0.2) -> Tuple
     training_labels = labels[:num_training]
     testing_samples = images[num_training:]
     testing_labels = images[num_training:]
-    
-    return (training_samples, training_labels),(testing_samples, testing_labels)
+
+    return (training_samples, training_labels), (testing_samples, testing_labels)

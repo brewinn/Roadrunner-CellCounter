@@ -1,6 +1,6 @@
 # This script simply runs all available tests.
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import unittest
 
     # For each file in the tests folder, add an import statement and an addTest statement
