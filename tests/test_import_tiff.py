@@ -27,7 +27,6 @@ class TestImportTiff(unittest.TestCase):
 
     def test_tiff_cell_values(self):
         for index, image in enumerate(self.images):
-            # print(f'{index=}:\n{image=}')
             self.assertEqual(image[0, 0], 255)
             # Check for black pixel on the zero of page 10
             #  note that the coordinates start at the top left,
