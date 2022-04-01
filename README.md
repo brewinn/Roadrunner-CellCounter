@@ -1,5 +1,6 @@
 # Roadrunner-CellCounter A cell counter using computer vision techniques. 
 
+[![Tests](https://github.com/brewinn/Roadrunner-CellCounter/actions/workflows/tests.yml/badge.svg)](https://github.com/brewinn/Roadrunner-CellCounter/actions/workflows/tests.yml)
 ## Description
 
 A work-in-progress automated cell counter. Ultimately, the program will receive
