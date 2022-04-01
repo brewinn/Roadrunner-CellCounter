@@ -1,0 +1,39 @@
+
+name: Tests
+  
+on:
+  
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+      
+  workflow_dispatch:
+
+    
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v2
+      - name: Compile sources
+        run: |
+          echo Installing cell_counter module
+          pip install .
+
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build and run tests
+      run: | 
+        echo Running tests...
+        python3 CI_tests.py
+
