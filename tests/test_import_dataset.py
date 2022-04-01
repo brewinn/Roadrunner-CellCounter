@@ -47,5 +47,6 @@ class TestImportSyntheticDataset(unittest.TestCase):
         self.assertEqual(self.train_labels[1], 1)
         self.assertEqual(self.train_labels[2], 61)
 
+
 if __name__ == "__main__":
     unittest.main()
