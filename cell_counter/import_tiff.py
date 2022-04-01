@@ -16,7 +16,7 @@ def tiff_to_array(path: str) -> List[np.array]:
     Returns a list of arrays representing the tiff at the given path.
 
     Parameters:
-    path (int): The absolute path to the file. A relative directory may be
+    path (str): The absolute path to the file. A relative directory may be
     supplied, but may not work as intended.
 
     Returns:
