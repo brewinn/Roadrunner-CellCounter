@@ -98,13 +98,15 @@ MIT: <https://mit-license.org>
 
 Below is a list of currently implemented features:
 
-- Nothing just yet!
+- Dataset importation: The synthetic-cell dataset, when unzipped to the correct
+  place, may be loaded in with a single function call.
 
 ## To-do
 
-- [ ] Dataset Reading
+- [X] Dataset reading
 - [ ] Preprocessing of datasets
-- [ ] ...and much more
+- [ ] Implementation of methods
+- [ ] Result collection and analysis
 
 ## How to Contribute
 
