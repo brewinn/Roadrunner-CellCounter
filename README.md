@@ -29,6 +29,11 @@ To uninstall, run `pip uninstall cell_counter`.
 
 ## Usage
 
+First, download the synthetic-cell dataset from [Synthetic
+cells](https://bbbc.broadinstitute.org/BBBC005/). The dataset should then be
+unzipped into the *resources* directory. The structure should look like
+*resources/BBBC005_v1_images/IMAGES*.
+
 Only a few tests have been implemented so far. They may be run with `python3
 tests/test_import_tiff.py`.
 
