@@ -15,7 +15,7 @@ import random
 
 
 def load_synthetic_dataset(
-    seed=None, num: int = 10000, split: float = 0.2
+        seed:int =None, num: int = 10000, split: float = 0.2, path:str = None
 ) -> Tuple[Tuple[List[np.array], List[int]], Tuple[List[np.array], List[int]]]:
     """
     Returns two tuples, containing the images and labels for the training and
@@ -25,6 +25,7 @@ def load_synthetic_dataset(
     seed (int|None): Seed for the random images.
     number (int): Total number of images to import from the dataset.
     split (float): The proportion of images to use in the testing set.
+    path (str|None): Path to images.
 
     Returns:
     Tuple[Tuple[List[np.array], List[int]], Tuple[List[np.array], List[int]]]:
@@ -43,8 +44,11 @@ def load_synthetic_dataset(
         random.seed(seed)
 
     # Find path to images
-    counter_dir = os.path.dirname(__file__)
-    path_to_images = counter_dir + "/../resources/BBBC005_v1_images/"
+    if path:
+        path_to_images = path
+    else:
+        counter_dir = os.path.dirname(__file__)
+        path_to_images = counter_dir + "/../resources/BBBC005_v1_images/"
 
     # List of found tif files
     image_filenames = [
