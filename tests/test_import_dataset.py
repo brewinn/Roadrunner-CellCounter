@@ -18,7 +18,7 @@ class TestImportSyntheticDataset(unittest.TestCase):
         (self.train_images, self.train_labels), (
             self.test_images,
             self.test_labels,
-        ) = load_synthetic_dataset(seed=1, num=20, path=path_to_images)
+        ) = load_synthetic_dataset(is_random=False, num=20, path=path_to_images)
 
     def test_image_sizes(self):
         self.assertEqual(len(self.train_images), 16)
@@ -33,17 +33,17 @@ class TestImportSyntheticDataset(unittest.TestCase):
         self.assertRaises(Exception, load_synthetic_dataset, **{"num": 100000000000})
 
     def test_imported_images(self):
-        # With the seed set to 1, the first three images in the training set
-        #  should be SIMCEPImages_J20_C83_F29_s19_w2.TIF,
-        #  SIMCEPImages_G22_C91_F20_s07_w2.TIF, and
-        #  SIMCEPImages_E03_C10_F14_s04_w2.TIF
+        # With the is_random set to False, the first three images in the
+        # training set should be SIMCEPImages_B18_C74_F4_s10_w2.TIF,
+        # SIMCEPImages_A15_C61_F1_s14_w1.TIF, and
+        # SIMCEPImages_E03_C10_F14_s04_w2.TIF
 
 
-        # Test for SIMCEPImages_J20_C83_F29_s19_w2.TIF
+        # Test for SIMCEPImages_B18_C74_F4_s10_w2.TIF
         self.assertEqual(self.train_images[0][170, 350], 1)
         self.assertEqual(self.train_images[0][170, 400], 111)
 
-        # Test for SIMCEPImages_G22_C91_F20_s07_w2.TIF
+        # Test for SIMCEPImages_A15_C61_F1_s14_w1.TIF
         self.assertEqual(self.train_images[1][130, 220], 1)
         self.assertEqual(self.train_images[1][245, 335], 149)
 
@@ -54,8 +54,8 @@ class TestImportSyntheticDataset(unittest.TestCase):
     def test_imported_labels(self):
         # Similar to the  import_images test, we check that the first few
         #  imported labels are correct
-        self.assertEqual(self.train_labels[0], 83)
-        self.assertEqual(self.train_labels[1], 91)
+        self.assertEqual(self.train_labels[0], 74)
+        self.assertEqual(self.train_labels[1], 61)
         self.assertEqual(self.train_labels[2], 10)
 
 
