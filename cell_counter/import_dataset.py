@@ -58,6 +58,10 @@ def load_synthetic_dataset(
         if image_file[-4:] == ".TIF"
     ]
 
+    # To keep the images consistent between non-random runs on different
+    # machines.
+    image_filenames.sort()
+
     # Determine the number of testing and training samples
     num_test = int(num * split)
     if num_test < 0:
