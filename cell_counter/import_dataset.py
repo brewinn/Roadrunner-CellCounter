@@ -68,6 +68,9 @@ def load_synthetic_dataset(
 
     # Randomly select images from dataset
     samples = random.sample(image_filenames, num) if is_random else image_filenames[:num]
+    print(f'{samples[0]=}')
+    print(f'{samples[1]=}')
+    print(f'{samples[2]=}')
 
     # Convert images to arrays, note that we only need the first 'page'
     # images = [tiff_to_array(path_to_images + sample)[0] for sample in samples]
