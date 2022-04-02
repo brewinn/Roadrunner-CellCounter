@@ -38,8 +38,6 @@ class TestImportSyntheticDataset(unittest.TestCase):
         # SIMCEPImages_B18_C74_F4_s04_w2.TIF, and
         # SIMCEPImages_B18_C74_F4_s10_w2.TIF
 
-
-
         # Test for SIMCEPImages_A15_C61_F1_s14_w1.TIF
         self.assertEqual(self.train_images[0][290, 275], 2)
         self.assertEqual(self.train_images[0][290, 225], 132)

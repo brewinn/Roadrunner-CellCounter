@@ -15,7 +15,11 @@ import random
 
 
 def load_synthetic_dataset(
-        is_random:bool = True, seed:int =None, num: int = 10000, split: float = 0.2, path:str = None
+    is_random: bool = True,
+    seed: int = None,
+    num: int = 10000,
+    split: float = 0.2,
+    path: str = None,
 ) -> Tuple[Tuple[List[np.array], List[int]], Tuple[List[np.array], List[int]]]:
     """
     Returns two tuples, containing the images and labels for the training and
@@ -72,7 +76,9 @@ def load_synthetic_dataset(
     num_training = num - num_test
 
     # Randomly select images from dataset
-    samples = random.sample(image_filenames, num) if is_random else image_filenames[:num]
+    samples = (
+        random.sample(image_filenames, num) if is_random else image_filenames[:num]
+    )
 
     # Convert images to arrays, note that we only need the first 'page'
     # images = [tiff_to_array(path_to_images + sample)[0] for sample in samples]
