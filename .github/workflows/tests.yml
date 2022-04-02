@@ -25,5 +25,5 @@ jobs:
         echo Installing cell_counter module
         pip install .
         echo Running tests...
-        python3 CI_tests.py
+        python3 run_tests.py
 
