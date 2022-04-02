@@ -14,4 +14,10 @@ if __name__ == "__main__":
 
     result = unittest.TextTestRunner(verbosity=2).run(suite)
 
-    print(result)
+    # The script should exit with failure if some test did not pass.
+    # This allows CI to report if some test failed, rather than having to look
+    # through the logs.
+    if result.wasSuccessful():
+        exit(0)
+    else:
+        exit(1)
