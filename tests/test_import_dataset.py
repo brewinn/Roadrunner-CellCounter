@@ -41,16 +41,16 @@ class TestImportSyntheticDataset(unittest.TestCase):
 
 
         # Test for SIMCEPImages_A15_C61_F1_s14_w1.TIF
-        self.assertEqual(self.train_images[0][170, 350], 1)
-        self.assertEqual(self.train_images[0][170, 400], 111)
+        self.assertEqual(self.train_images[0][290, 275], 2)
+        self.assertEqual(self.train_images[0][290, 225], 132)
 
         # Test for SIMCEPImages_B18_C74_F4_s04_w2.TIF
-        self.assertEqual(self.train_images[1][130, 220], 1)
-        self.assertEqual(self.train_images[1][245, 335], 149)
+        self.assertEqual(self.train_images[1][150, 230], 2)
+        self.assertEqual(self.train_images[1][150, 280], 183)
 
         # Test for SIMCEPImages_B18_C74_F4_s10_w2.TIF
-        self.assertEqual(self.train_images[2][260, 360], 1)
-        self.assertEqual(self.train_images[2][200, 350], 156)
+        self.assertEqual(self.train_images[2][135, 340], 1)
+        self.assertEqual(self.train_images[2][135, 310], 149)
 
     def test_imported_labels(self):
         # Similar to the  import_images test, we check that the first few
