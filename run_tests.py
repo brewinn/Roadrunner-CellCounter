@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 # This script simply runs all available tests.
 
 if __name__ == "__main__":
