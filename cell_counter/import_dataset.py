@@ -60,7 +60,8 @@ def load_synthetic_dataset(
 
     # To keep the images consistent between non-random runs on different
     # machines.
-    image_filenames.sort()
+    if not is_random:
+        image_filenames.sort()
 
     # Determine the number of testing and training samples
     num_test = int(num * split)

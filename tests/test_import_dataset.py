@@ -34,29 +34,30 @@ class TestImportSyntheticDataset(unittest.TestCase):
 
     def test_imported_images(self):
         # With the is_random set to False, the first three images in the
-        # training set should be SIMCEPImages_B18_C74_F4_s10_w2.TIF,
-        # SIMCEPImages_A15_C61_F1_s14_w1.TIF, and
-        # SIMCEPImages_E03_C10_F14_s04_w2.TIF
+        # training set should be SIMCEPImages_A15_C61_F1_s14_w1.TIF,
+        # SIMCEPImages_B18_C74_F4_s04_w2.TIF, and
+        # SIMCEPImages_B18_C74_F4_s10_w2.TIF
 
 
-        # Test for SIMCEPImages_B18_C74_F4_s10_w2.TIF
+
+        # Test for SIMCEPImages_A15_C61_F1_s14_w1.TIF
         self.assertEqual(self.train_images[0][170, 350], 1)
         self.assertEqual(self.train_images[0][170, 400], 111)
 
-        # Test for SIMCEPImages_A15_C61_F1_s14_w1.TIF
+        # Test for SIMCEPImages_B18_C74_F4_s04_w2.TIF
         self.assertEqual(self.train_images[1][130, 220], 1)
         self.assertEqual(self.train_images[1][245, 335], 149)
 
-        # Test for SIMCEPImages_E03_C10_F14_s04_w2.TIF
+        # Test for SIMCEPImages_B18_C74_F4_s10_w2.TIF
         self.assertEqual(self.train_images[2][260, 360], 1)
         self.assertEqual(self.train_images[2][200, 350], 156)
 
     def test_imported_labels(self):
         # Similar to the  import_images test, we check that the first few
         #  imported labels are correct
-        self.assertEqual(self.train_labels[0], 74)
-        self.assertEqual(self.train_labels[1], 61)
-        self.assertEqual(self.train_labels[2], 10)
+        self.assertEqual(self.train_labels[0], 61)
+        self.assertEqual(self.train_labels[1], 74)
+        self.assertEqual(self.train_labels[2], 74)
 
 
 if __name__ == "__main__":
