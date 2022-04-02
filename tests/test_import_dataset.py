@@ -14,9 +14,13 @@ class TestImportSyntheticDataset(unittest.TestCase):
             self.test_labels,
         ) = load_synthetic_dataset(seed=1, num=100)
 
-    def test_dataset_size(self):
+    def test_image_sizes(self):
         self.assertEqual(len(self.train_images), 80)
         self.assertEqual(len(self.test_images), 20)
+
+    def test_label_sizes(self):
+        self.assertEqual(len(self.train_labels), 80)
+        self.assertEqual(len(self.test_labels), 20)
 
     def test_bad_size(self):
         self.assertRaises(Exception, load_synthetic_dataset, **{"num": -1})
