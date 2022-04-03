@@ -10,4 +10,6 @@ Provide links or other citations for resources that are not made by you here.
 
 [multipage_tiff_example.tif](https://www.nightprogrammer.org/development/multipage-tiff-example-download-test-image-file/)
 
-[simple_tiff_example.TIF](https://bbbc.broadinstitute.org/BBBC005/)
+[simple_tiff_example.TIF](https://bbbc.broadinstitute.org/BBBC005/): First image in the dataset.
+
+[test_dataset](https://bbbc.broadinstitute.org/BBBC005/): 25 randomly selected images from the dataset.
