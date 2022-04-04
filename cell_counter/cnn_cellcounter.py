@@ -202,7 +202,8 @@ if __name__ == "__main__":
 
     import matplotlib.pyplot as plt
 
-    plt.plot(training_hist.history["mse"], label="mean_squared_error")
+    plt.plot(training_hist.history["mse"], label="mse")
+    plt.plot(training_hist.history["val_mse"], label="val_mse")
     plt.xlabel("Epoch")
     plt.ylabel("Mean Squared Error")
     plt.legend(loc="upper right")
