@@ -27,10 +27,10 @@ def load_synthetic_dataset(
 
     Parameters:
     is_random (bool): If selected images should be randomized
-    seed (int|None): Seed for the random images.
+    seed (int): Seed for the random images.
     number (int): Total number of images to import from the dataset.
     split (float): The proportion of images to use in the testing set.
-    path (str|None): Path to images.
+    path (str): Path to images.
 
     Returns:
     Tuple[Tuple[List[np.array], List[int]], Tuple[List[np.array], List[int]]]:
@@ -102,6 +102,6 @@ def load_synthetic_dataset(
     training_samples = images[:num_training]
     training_labels = labels[:num_training]
     testing_samples = images[num_training:]
-    testing_labels = images[num_training:]
+    testing_labels = labels[num_training:]
 
     return (training_samples, training_labels), (testing_samples, testing_labels)
