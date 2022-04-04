@@ -125,7 +125,7 @@ def compile_cnn(model):
 def run_cnn(
     model,
     path: str = None,
-    image_number: int = 10000,
+    image_number: int = 2000,
     checkpointing: bool = True,
     checkpoint_path: str = None,
     epochs: int = 10,

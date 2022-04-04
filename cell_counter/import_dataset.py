@@ -17,7 +17,7 @@ import random
 def load_synthetic_dataset(
     is_random: bool = True,
     seed: int = None,
-    num: int = 10000,
+    num: int = 2000,
     split: float = 0.2,
     path: str = None,
 ) -> Tuple[Tuple[List[np.array], List[int]], Tuple[List[np.array], List[int]]]:
