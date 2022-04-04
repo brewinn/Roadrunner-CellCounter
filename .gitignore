@@ -13,3 +13,6 @@ resources/BBBC005_v1_images.zip
 
 # Ignore ctags
 tags
+
+# Ignore checkpoints, as their fairly large
+resources/checkpoints
