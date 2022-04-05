@@ -21,12 +21,12 @@ class TestImportSyntheticDataset(unittest.TestCase):
         ) = load_synthetic_dataset(is_random=False, num=20, path=path_to_images)
 
     def test_image_sizes(self):
-        self.assertEqual(len(self.train_images), 16)
-        self.assertEqual(len(self.test_images), 4)
+        self.assertEqual(self.train_images.shape, (16, 520, 696))
+        self.assertEqual(self.test_images.shape, (4, 520, 696))
 
     def test_label_sizes(self):
-        self.assertEqual(len(self.train_labels), 16)
-        self.assertEqual(len(self.test_labels), 4)
+        self.assertEqual(self.train_labels.shape, (16,))
+        self.assertEqual(self.test_labels.shape, (4,))
 
     def test_bad_size(self):
         self.assertRaises(Exception, load_synthetic_dataset, **{"num": -1})

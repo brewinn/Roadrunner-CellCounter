@@ -8,7 +8,7 @@ from typing import Tuple, List
 import os
 
 # For turning the images to arrays
-from cell_counter.import_tiff import tiff_to_array
+from cell_counter.import_tiff import tiff_to_array, reduce_resolution
 
 # For random image selection
 import random
@@ -20,7 +20,8 @@ def load_synthetic_dataset(
     num: int = 2000,
     split: float = 0.2,
     path: str = None,
-) -> Tuple[Tuple[List[np.array], List[int]], Tuple[List[np.array], List[int]]]:
+    resolution: Tuple[int,int] = None
+) -> Tuple[Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]:
     """
     Returns two tuples, containing the images and labels for the training and
     test sets, respectively.
@@ -28,12 +29,13 @@ def load_synthetic_dataset(
     Parameters:
     is_random (bool): If selected images should be randomized
     seed (int): Seed for the random images.
-    number (int): Total number of images to import from the dataset.
+    num (int): Total number of images to import from the dataset.
     split (float): The proportion of images to use in the testing set.
     path (str): Path to images.
+    resolution (Tuple[int,int]): Resolution to reduce images down to.
 
     Returns:
-    Tuple[Tuple[List[np.array], List[int]], Tuple[List[np.array], List[int]]]:
+    Tuple[Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]:
     A set of images and labels for the training and testing sets, respectively.
 
     """
@@ -84,7 +86,11 @@ def load_synthetic_dataset(
     # images = [tiff_to_array(path_to_images + sample)[0] for sample in samples]
     images = []
     for sample in samples:
-        images.append(tiff_to_array(path_to_images + sample)[0])
+        image = tiff_to_array(path_to_images + sample)[0]
+        if resolution != None:
+            image = reduce_resolution(image, resolution)
+        images.append(image)
+        # Should consider implementing some sort of progress bar
 
     # Find the cell count from the filename
     import re
@@ -99,9 +105,9 @@ def load_synthetic_dataset(
     labels = [extract_label(image) for image in samples]
 
     # Split samples and labels into test and training sets
-    training_samples = images[:num_training]
-    training_labels = labels[:num_training]
-    testing_samples = images[num_training:]
-    testing_labels = labels[num_training:]
+    training_samples = np.array(images[:num_training])
+    training_labels = np.array(labels[:num_training])
+    testing_samples = np.array(images[num_training:])
+    testing_labels = np.array(labels[num_training:])
 
     return (training_samples, training_labels), (testing_samples, testing_labels)

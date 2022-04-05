@@ -19,10 +19,7 @@ class TestCNN(unittest.TestCase):
     def test_cnn_preprocess_data(self):
         test_dir = os.path.dirname(__file__)
         test_dataset_path = test_dir + "/../resources/test_dataset/"
-        dataset = load_synthetic_dataset(
-            is_random=False, path=test_dataset_path, num=25
-        )
-        cnn_preprocess_data(dataset)
+        dataset = cnn_preprocess_data(path=test_dataset_path, num=25)
 
         # Check resolution
         self.assertEqual(dataset[0][0][0].shape, (128, 128))

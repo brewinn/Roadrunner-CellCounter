@@ -5,73 +5,35 @@ from typing import List, Tuple
 import numpy as np
 
 # For accessing the dataset
-from cell_counter import import_dataset
+from cell_counter.import_dataset import load_synthetic_dataset
 
 # For creating and using CNN
 import tensorflow as tf
 
 
-def cnn_preprocess_data(
-    dataset: Tuple[Tuple[List[np.array], List[int]], Tuple[List[np.array], List[int]]]
-):
+def cnn_preprocess_data(path:str=None, num:int = 2500) -> Tuple[Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]:
     """
     Reduce the resolution, and normalize the images in the dataset.
     Modification is in-place.
 
     Parameters:
-    dataset: The dataset, including the images to be modified.
+    path (str): Path to images.
+    num (int): Total number of images to import from the dataset.
+
+    Returns:
+    Tuple[Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]: The
+    dataset, including the preprocessed images.
 
     """
-    training_images = dataset[0][0]
-    testing_images = dataset[1][0]
-
-    # Reduce image resolution by averaging, should probably move this to import_tiff
-    def reduce_resolution(image: np.array, shape: Tuple[int, int] = (128, 128)):
-        intermediate_image = np.zeros((shape[0], image.shape[1]))
-        new_image = np.transpose(np.zeros(shape))
-        ratio = image.shape[0] / float(shape[0])
-        value = ratio
-        carryover = 0.0
-        pixel = 0
-        for new_pixel in range(shape[0]):
-            while value > 1:
-                if carryover > 0:
-                    intermediate_image[new_pixel] += carryover * image[pixel - 1]
-                else:
-                    intermediate_image[new_pixel] += image[pixel]
-                    value -= 1
-                    pixel += 1
-            intermediate_image[new_pixel] += value * image[pixel]
-            intermediate_image[new_pixel] /= ratio
-            carryover = 1 - ratio
-            value = ratio
-
-        ratio = image.shape[1] / float(shape[1])
-        value = ratio
-        carryover = 0.0
-        pixel = 0
-        intermediate_image = np.transpose(intermediate_image)
-        for new_pixel in range(shape[1]):
-            while value > 1:
-                if carryover > 0:
-                    new_image[new_pixel] += carryover * intermediate_image[pixel - 1]
-                    carryover = 0
-                else:
-                    new_image[new_pixel] += intermediate_image[pixel]
-                    value -= 1
-                    pixel += 1
-            new_image[new_pixel] += value * intermediate_image[pixel]
-            new_image[new_pixel] /= ratio
-            carryover = 1 - ratio
-            value = ratio
-
-        return np.transpose(new_image)
+    (training_images, training_labels), ( testing_images, testing_labels,) = load_synthetic_dataset(path=path, num=num, resolution=(128, 128))
 
     scale = 1 / float(255)
     for index, image in enumerate(training_images):
-        training_images[index] = reduce_resolution(image) * scale
+        training_images[index] = image * scale
     for index, image in enumerate(testing_images):
-        testing_images[index] = reduce_resolution(image) * scale
+        testing_images[index] = image * scale
+
+    return (training_images, training_labels), ( testing_images, testing_labels,)
 
 
 def build_cnn():
@@ -153,9 +115,7 @@ def run_cnn(
     (training_images, training_labels), (
         testing_images,
         testing_labels,
-    ) = import_dataset.load_synthetic_dataset(path=path, num=image_number)
-    dataset = (training_images, training_labels), (testing_images, testing_labels)
-    cnn_preprocess_data(dataset)
+    ) = cnn_preprocess_data(path=path, num=image_number)
     if checkpointing:
         if not checkpoint_path:
             import os
@@ -167,8 +127,8 @@ def run_cnn(
             filepath=checkpoint_path, save_weights_only=True, verbose=1
         )
         training_history = model.fit(
-            np.array(training_images),
-            np.array(training_labels),
+            training_images,
+            training_labels,
             epochs=epochs,
             validation_split=validation_split,
             callbacks=[cp_callback],
@@ -177,16 +137,16 @@ def run_cnn(
 
     else:
         training_history = model.fit(
-            np.array(training_images),
-            np.array(training_labels),
+            training_images,
+            training_labels,
             epochs=epochs,
             validation_split=validation_split,
             verbose=verbose,
         )
 
     testing_evaluation = model.evaluate(
-        np.array(testing_images),
-        np.array(testing_labels),
+        testing_images,
+        testing_labels,
         verbose=0 if verbose == 0 else 1,
     )
     return training_history, testing_evaluation
