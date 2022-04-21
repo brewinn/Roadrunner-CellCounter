@@ -11,7 +11,9 @@ from cell_counter.import_dataset import load_synthetic_dataset
 import tensorflow as tf
 
 
-def cnn_preprocess_data(path:str=None, num:int = 2500) -> Tuple[Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]:
+def cnn_preprocess_data(
+    path: str = None, num: int = 2500
+) -> Tuple[Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]:
     """
     Reduce the resolution, and normalize the images in the dataset.
     Modification is in-place.
@@ -25,7 +27,10 @@ def cnn_preprocess_data(path:str=None, num:int = 2500) -> Tuple[Tuple[np.ndarray
     dataset, including the preprocessed images.
 
     """
-    (training_images, training_labels), ( testing_images, testing_labels,) = load_synthetic_dataset(path=path, num=num, resolution=(128, 128))
+    (training_images, training_labels), (
+        testing_images,
+        testing_labels,
+    ) = load_synthetic_dataset(path=path, num=num, resolution=(128, 128))
 
     scale = 1 / float(255)
     for index, image in enumerate(training_images):
@@ -33,7 +38,10 @@ def cnn_preprocess_data(path:str=None, num:int = 2500) -> Tuple[Tuple[np.ndarray
     for index, image in enumerate(testing_images):
         testing_images[index] = image * scale
 
-    return (training_images, training_labels), ( testing_images, testing_labels,)
+    return (training_images, training_labels), (
+        testing_images,
+        testing_labels,
+    )
 
 
 def build_cnn():

@@ -20,7 +20,7 @@ def load_synthetic_dataset(
     num: int = 2000,
     split: float = 0.2,
     path: str = None,
-    resolution: Tuple[int,int] = None
+    resolution: Tuple[int, int] = None,
 ) -> Tuple[Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]:
     """
     Returns two tuples, containing the images and labels for the training and

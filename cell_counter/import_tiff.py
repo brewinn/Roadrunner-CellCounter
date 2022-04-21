@@ -30,6 +30,7 @@ def tiff_to_array(path: str) -> List[np.array]:
     _, images = cv2.imreadmulti(mats=images, filename=path, flags=cv2.IMREAD_GRAYSCALE)
     return images
 
+
 # Reduce image resolution by averaging
 def reduce_resolution(image: np.array, shape: Tuple[int, int] = (128, 128)) -> np.array:
     intermediate_image = np.zeros((shape[0], image.shape[1]))
@@ -71,4 +72,3 @@ def reduce_resolution(image: np.array, shape: Tuple[int, int] = (128, 128)) -> n
         value = ratio
 
     return np.transpose(new_image)
-
