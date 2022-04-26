@@ -132,6 +132,7 @@ def build_nalu_fcrn():
             return act_b
         return f
 
+    # Original base, as used in the paper. Outputs heatmap.
     def fcrn_nalu(input_):
         block1 = _conv_bn_relu_x2(32,(3,3))(input_)
         pool1 = layers.MaxPooling2D(pool_size=(2,2))(block1)
@@ -165,22 +166,66 @@ def build_nalu_fcrn():
         block7 = layers.Concatenate()([_conv_bn_relu_x2(32,(3,3))(up7), nal1])
         block7 = _conv_bn_relu_x2(32,(3,3))(up7)
         return block7
+
+    # Modified base, outputs single prediction for cellcount
+    def modified_fcrn_nalu(input_):
+        block1 = _conv_bn_relu_x2(32,(3,3))(input_)
+        pool1 = layers.MaxPooling2D(pool_size=(2,2))(block1)
+        nal1 = NALU(32, mode="NAC",
+                MW_initializer=initializers.RandomNormal(stddev=1),
+                G_initializer=initializers.Constant(10))(block1)
+        # =========================================================================
+        block2 = _conv_bn_relu_x2(64,(3,3))(pool1)
+        pool2 = layers.MaxPooling2D(pool_size=(2, 2))(block2)
+        nal2 = NALU(64, mode="NAC",
+                MW_initializer=initializers.RandomNormal(stddev=1),
+                G_initializer=initializers.Constant(10))(block2)
+        # =========================================================================
+        block3 = _conv_bn_relu_x2(128,(3,3))(pool2)
+        pool3 = layers.MaxPooling2D(pool_size=(2, 2))(block3)
+        nal3 = NALU(128, mode="NAC",
+                MW_initializer=initializers.RandomNormal(stddev=1),
+                G_initializer=initializers.Constant(10))(block3)
+        # =========================================================================
+        block4 = _conv_bn_relu(512,(3,3))(pool3)
+        # =========================================================================
+        up5 = layers.UpSampling2D(size=(2, 2))(block4)
+        block5 = layers.Concatenate()([_conv_bn_relu_x2(128,(3,3))(up5), nal3])
+        block5 = _conv_bn_relu_x2(128,(3,3))(up5)
+        # =========================================================================
+        # Append simple cnn to reduce the final output to appropriate dimensions
+        cnn_filter = 16
+        cnn_pool_size = 2
+        kernal = (3, 3)
+        dropout_rate = 0.2
+
+        outputs_ = layers.Conv2D( cnn_filter, kernal, activation="relu")(block5)
+        outputs_ = layers.MaxPooling2D(pool_size=cnn_pool_size)(outputs_)
+        outputs_ = layers.Dropout(dropout_rate)(outputs_)
+        outputs_ = layers.Conv2D(2 * cnn_filter, kernal, activation="relu")(outputs_)
+        outputs_ = layers.MaxPooling2D(pool_size=cnn_pool_size)(outputs_)
+        outputs_ = layers.Conv2D(2 * cnn_filter, kernal, activation="relu")(outputs_)
+
+        outputs_ = layers.Flatten()(outputs_)
+        outputs_ = layers.Dense(64)(outputs_)
+        outputs_ = layers.Dense(1, activation="relu")(outputs_)
+        return outputs_
     
     input_ = layers.Input(shape = preprocessed_image_shape)
 
-    act_ = fcrn_nalu(input_)
+    outputs_ = modified_fcrn_nalu(input_)
 
-    density_pred =  layers.Conv2D(1, (1,1), use_bias=False,
-            activation='linear', kernel_initializer='orthogonal', name='pred',
-            padding='same')(act_)
+    #act_ = fcrn_nalu(input_)
 
-    model = Model(inputs = input_, outputs=density_pred)
+    #density_pred =  layers.Conv2D(1, (1,1), use_bias=False, activation='linear', kernel_initializer='orthogonal', name='pred', padding='same')(act_)
+
+    model = Model(inputs = input_, outputs=outputs_)
 
     return model
 
 def compile_nalu_fcrn(model):
-    opt = tf.keras.optimizers.SGD()
-    model.compile(optimizer=opt, loss='mse', metrics=['mse'])
+    #opt = tf.keras.optimizers.SGD()
+    model.compile(optimizer='adam', loss='mse', metrics=['mse'])
 
 def run_nalu_fcrn(
     model,

@@ -89,6 +89,7 @@ def build_fcrn():
             return act_b
         return f
 
+    # Original base, as used in the paper. Outputs heatmap.
     def fcrn_base(input_):
         block1 = _conv_bn_relu_x2(32,(3,3))(input_)
         pool1 = layers.MaxPooling2D(pool_size=(2,2))(block1)
@@ -110,22 +111,58 @@ def build_fcrn():
         up7 = layers.UpSampling2D(size=(2, 2))(block6)
         block7 = _conv_bn_relu_x2(32,(3,3))(up7)
         return block7
+
+    # Modified base, outputs single prediction for cellcount
+    def modified_fcrn_base(input_):
+        block1 = _conv_bn_relu_x2(32,(3,3))(input_)
+        pool1 = layers.MaxPooling2D(pool_size=(2,2))(block1)
+        # =========================================================================
+        block2 = _conv_bn_relu_x2(64,(3,3))(pool1)
+        pool2 = layers.MaxPooling2D(pool_size=(2, 2))(block2)
+        # =========================================================================
+        block3 = _conv_bn_relu_x2(128,(3,3))(pool2)
+        pool3 = layers.MaxPooling2D(pool_size=(2, 2))(block3)
+        # =========================================================================
+        block4 = _conv_bn_relu(512,(3,3))(pool3)
+        # =========================================================================
+        up5 = layers.UpSampling2D(size=(2, 2))(block4)
+        block5 = _conv_bn_relu_x2(128,(3,3))(up5)
+        # =========================================================================
+        # Append simple cnn to reduce the final output to appropriate dimensions
+        cnn_filter = 16
+        cnn_pool_size = 2
+        kernal = (3, 3)
+        dropout_rate = 0.2
+
+        outputs_ = layers.Conv2D( cnn_filter, kernal, activation="relu")(block5)
+        outputs_ = layers.MaxPooling2D(pool_size=cnn_pool_size)(outputs_)
+        outputs_ = layers.Dropout(dropout_rate)(outputs_)
+        outputs_ = layers.Conv2D(2 * cnn_filter, kernal, activation="relu")(outputs_)
+        outputs_ = layers.MaxPooling2D(pool_size=cnn_pool_size)(outputs_)
+        outputs_ = layers.Conv2D(2 * cnn_filter, kernal, activation="relu")(outputs_)
+
+        outputs_ = layers.Flatten()(outputs_)
+        outputs_ = layers.Dense(64)(outputs_)
+        outputs_ = layers.Dense(1, activation="relu")(outputs_)
+        return outputs_
     
     input_ = layers.Input(shape = preprocessed_image_shape)
 
-    act_ = fcrn_base(input_)
+    outputs_ = modified_fcrn_base(input_)
 
-    density_pred =  layers.Conv2D(1, (1,1), use_bias=False,
-            activation='linear', kernel_initializer='orthogonal', name='pred',
-            padding='same')(act_)
+    #density_pred =  layers.Conv2D(1, (1,1), use_bias=False, activation='linear', kernel_initializer='orthogonal', name='pred', padding='same')(act_)
 
-    model = Model(inputs = input_, outputs=density_pred)
+    #model = Model(inputs = input_, outputs=density_pred)
+
+    #========================================================================
+
+    model = Model(inputs = input_, outputs=outputs_)
 
     return model
 
 def compile_fcrn(model):
-    opt = tf.keras.optimizers.SGD()
-    model.compile(optimizer=opt, loss='mse', metrics=['mse'])
+    #opt = tf.keras.optimizers.SGD(nesterov=True)
+    model.compile(optimizer='adam', loss='mse', metrics=['mse'])
 
 def run_fcrn(
     model,
@@ -198,9 +235,10 @@ def run_fcrn(
 if __name__ == "__main__":
     model = build_fcrn()
     compile_fcrn(model)
+    print(model.summary())
 
     training_hist, _ = run_fcrn(
-        model, epochs=10, image_number=250, validation_split=0.1, checkpointing=False
+        model, epochs=10, image_number=2500, validation_split=0.1, checkpointing=False
     )
 
     import matplotlib.pyplot as plt
