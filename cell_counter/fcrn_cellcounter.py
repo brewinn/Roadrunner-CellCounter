@@ -1,10 +1,11 @@
-#For building and running the model
+# For building and running the model
 import tensorflow as tf
 
-#For importing the dataset
+# For importing the dataset
 from cell_counter.import_dataset import load_synthetic_dataset
 
-def fcrn_preprocess_data( path: str = None, num: int = 2500):
+
+def fcrn_preprocess_data(path: str = None, num: int = 2500):
     """
     Reduce the resolution, and normalize the images in the dataset.
     Modification is in-place.
@@ -34,6 +35,7 @@ def fcrn_preprocess_data( path: str = None, num: int = 2500):
         testing_labels,
     )
 
+
 def build_fcrn():
     """
     Returns a FCRN model for use on a preprocessed dataset.
@@ -43,90 +45,102 @@ def build_fcrn():
 
     from tensorflow.keras import Model, layers
 
-    def _conv_bn_relu(filters, kernel_size, subsample = (1,1), activation='relu', weight_decay = 1e-5):
+    def _conv_bn_relu(
+        filters, kernel_size, subsample=(1, 1), activation="relu", weight_decay=1e-5
+    ):
         def f(input_):
             conv_a = layers.Conv2D(
-                    filters, kernel_size, strides = subsample, 
-                    activation=activation,
-                    padding='same',
-                    use_bias=False,
-                    input_shape=preprocessed_image_shape, 
-                    kernel_initializer = 'orthogonal',
-                    kernel_regularizer = tf.keras.regularizers.L2(weight_decay),
-                    bias_regularizer = tf.keras.regularizers.L2(weight_decay),
-                )(input_)
+                filters,
+                kernel_size,
+                strides=subsample,
+                activation=activation,
+                padding="same",
+                use_bias=False,
+                input_shape=preprocessed_image_shape,
+                kernel_initializer="orthogonal",
+                kernel_regularizer=tf.keras.regularizers.L2(weight_decay),
+                bias_regularizer=tf.keras.regularizers.L2(weight_decay),
+            )(input_)
             norm_a = layers.BatchNormalization()(conv_a)
-            act_a = layers.Activation(activation = activation)(norm_a)
+            act_a = layers.Activation(activation=activation)(norm_a)
             return act_a
+
         return f
 
-    def _conv_bn_relu_x2(filters, kernel_size, subsample = (1,1), activation='relu', weight_decay = 1e-5):
+    def _conv_bn_relu_x2(
+        filters, kernel_size, subsample=(1, 1), activation="relu", weight_decay=1e-5
+    ):
         def f(input_):
             conv_a = layers.Conv2D(
-                    filters, kernel_size, strides = subsample, 
-                    activation=activation,
-                    padding='same',
-                    use_bias=False,
-                    input_shape=preprocessed_image_shape, 
-                    kernel_initializer = 'orthogonal',
-                    kernel_regularizer = tf.keras.regularizers.L2(weight_decay),
-                    bias_regularizer = tf.keras.regularizers.L2(weight_decay),
-                )(input_)
+                filters,
+                kernel_size,
+                strides=subsample,
+                activation=activation,
+                padding="same",
+                use_bias=False,
+                input_shape=preprocessed_image_shape,
+                kernel_initializer="orthogonal",
+                kernel_regularizer=tf.keras.regularizers.L2(weight_decay),
+                bias_regularizer=tf.keras.regularizers.L2(weight_decay),
+            )(input_)
             norm_a = layers.BatchNormalization()(conv_a)
-            act_a = layers.Activation(activation = activation)(norm_a)
+            act_a = layers.Activation(activation=activation)(norm_a)
             conv_b = layers.Conv2D(
-                    filters, kernel_size, strides = subsample, 
-                    activation=activation,
-                    padding='same',
-                    use_bias=False,
-                    input_shape=preprocessed_image_shape, 
-                    kernel_initializer = 'orthogonal',
-                    kernel_regularizer = tf.keras.regularizers.L2(weight_decay),
-                    bias_regularizer = tf.keras.regularizers.L2(weight_decay),
-                )(act_a)
+                filters,
+                kernel_size,
+                strides=subsample,
+                activation=activation,
+                padding="same",
+                use_bias=False,
+                input_shape=preprocessed_image_shape,
+                kernel_initializer="orthogonal",
+                kernel_regularizer=tf.keras.regularizers.L2(weight_decay),
+                bias_regularizer=tf.keras.regularizers.L2(weight_decay),
+            )(act_a)
             norm_b = layers.BatchNormalization()(conv_b)
-            act_b = layers.Activation(activation = activation)(norm_b)
+            act_b = layers.Activation(activation=activation)(norm_b)
             return act_b
+
         return f
 
     # Original base, as used in the paper. Outputs heatmap.
     def fcrn_base(input_):
-        block1 = _conv_bn_relu_x2(32,(3,3))(input_)
-        pool1 = layers.MaxPooling2D(pool_size=(2,2))(block1)
+        block1 = _conv_bn_relu_x2(32, (3, 3))(input_)
+        pool1 = layers.MaxPooling2D(pool_size=(2, 2))(block1)
         # =========================================================================
-        block2 = _conv_bn_relu_x2(64,(3,3))(pool1)
+        block2 = _conv_bn_relu_x2(64, (3, 3))(pool1)
         pool2 = layers.MaxPooling2D(pool_size=(2, 2))(block2)
         # =========================================================================
-        block3 = _conv_bn_relu_x2(128,(3,3))(pool2)
+        block3 = _conv_bn_relu_x2(128, (3, 3))(pool2)
         pool3 = layers.MaxPooling2D(pool_size=(2, 2))(block3)
         # =========================================================================
-        block4 = _conv_bn_relu(512,(3,3))(pool3)
+        block4 = _conv_bn_relu(512, (3, 3))(pool3)
         # =========================================================================
         up5 = layers.UpSampling2D(size=(2, 2))(block4)
-        block5 = _conv_bn_relu_x2(128,(3,3))(up5)
+        block5 = _conv_bn_relu_x2(128, (3, 3))(up5)
         # =========================================================================
         up6 = layers.UpSampling2D(size=(2, 2))(block5)
-        block6 = _conv_bn_relu_x2(64,(3,3))(up6)
+        block6 = _conv_bn_relu_x2(64, (3, 3))(up6)
         # =========================================================================
         up7 = layers.UpSampling2D(size=(2, 2))(block6)
-        block7 = _conv_bn_relu_x2(32,(3,3))(up7)
+        block7 = _conv_bn_relu_x2(32, (3, 3))(up7)
         return block7
 
     # Modified base, outputs single prediction for cellcount
     def modified_fcrn_base(input_):
-        block1 = _conv_bn_relu_x2(32,(3,3))(input_)
-        pool1 = layers.MaxPooling2D(pool_size=(2,2))(block1)
+        block1 = _conv_bn_relu_x2(32, (3, 3))(input_)
+        pool1 = layers.MaxPooling2D(pool_size=(2, 2))(block1)
         # =========================================================================
-        block2 = _conv_bn_relu_x2(64,(3,3))(pool1)
+        block2 = _conv_bn_relu_x2(64, (3, 3))(pool1)
         pool2 = layers.MaxPooling2D(pool_size=(2, 2))(block2)
         # =========================================================================
-        block3 = _conv_bn_relu_x2(128,(3,3))(pool2)
+        block3 = _conv_bn_relu_x2(128, (3, 3))(pool2)
         pool3 = layers.MaxPooling2D(pool_size=(2, 2))(block3)
         # =========================================================================
-        block4 = _conv_bn_relu(512,(3,3))(pool3)
+        block4 = _conv_bn_relu(512, (3, 3))(pool3)
         # =========================================================================
         up5 = layers.UpSampling2D(size=(2, 2))(block4)
-        block5 = _conv_bn_relu_x2(128,(3,3))(up5)
+        block5 = _conv_bn_relu_x2(128, (3, 3))(up5)
         # =========================================================================
         # Append simple cnn to reduce the final output to appropriate dimensions
         cnn_filter = 16
@@ -134,7 +148,7 @@ def build_fcrn():
         kernal = (3, 3)
         dropout_rate = 0.2
 
-        outputs_ = layers.Conv2D( cnn_filter, kernal, activation="relu")(block5)
+        outputs_ = layers.Conv2D(cnn_filter, kernal, activation="relu")(block5)
         outputs_ = layers.MaxPooling2D(pool_size=cnn_pool_size)(outputs_)
         outputs_ = layers.Dropout(dropout_rate)(outputs_)
         outputs_ = layers.Conv2D(2 * cnn_filter, kernal, activation="relu")(outputs_)
@@ -145,24 +159,26 @@ def build_fcrn():
         outputs_ = layers.Dense(64)(outputs_)
         outputs_ = layers.Dense(1, activation="relu")(outputs_)
         return outputs_
-    
-    input_ = layers.Input(shape = preprocessed_image_shape)
+
+    input_ = layers.Input(shape=preprocessed_image_shape)
 
     outputs_ = modified_fcrn_base(input_)
 
-    #density_pred =  layers.Conv2D(1, (1,1), use_bias=False, activation='linear', kernel_initializer='orthogonal', name='pred', padding='same')(act_)
+    # density_pred =  layers.Conv2D(1, (1,1), use_bias=False, activation='linear', kernel_initializer='orthogonal', name='pred', padding='same')(act_)
 
-    #model = Model(inputs = input_, outputs=density_pred)
+    # model = Model(inputs = input_, outputs=density_pred)
 
-    #========================================================================
+    # ========================================================================
 
-    model = Model(inputs = input_, outputs=outputs_)
+    model = Model(inputs=input_, outputs=outputs_)
 
     return model
 
+
 def compile_fcrn(model):
-    #opt = tf.keras.optimizers.SGD(nesterov=True)
-    model.compile(optimizer='adam', loss='mse', metrics=['mse'])
+    # opt = tf.keras.optimizers.SGD(nesterov=True)
+    model.compile(optimizer="adam", loss="mse", metrics=["mse"])
+
 
 def run_fcrn(
     model,

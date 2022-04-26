@@ -13,8 +13,8 @@ if __name__ == "__main__":
     suite.addTest(unittest.makeSuite(TestImportTiff))
     # These tests run on old data. I may update them later, but they've more or
     # less served they're purpose at this point.
-    #suite.addTest(unittest.makeSuite(TestImportSyntheticDataset))
-    #suite.addTest(unittest.makeSuite(TestCNN))
+    # suite.addTest(unittest.makeSuite(TestImportSyntheticDataset))
+    # suite.addTest(unittest.makeSuite(TestCNN))
 
     result = unittest.TextTestRunner(verbosity=2).run(suite)
 
