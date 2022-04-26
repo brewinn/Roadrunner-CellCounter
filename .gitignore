@@ -17,3 +17,6 @@ tags
 
 # Ignore checkpoints, as their fairly large
 resources/checkpoints
+
+# Ignore dataset_info.csv, as it can be generated and changed frequently
+resources/dataset_info.csv

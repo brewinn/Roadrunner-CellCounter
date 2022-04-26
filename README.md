@@ -4,9 +4,11 @@ A cell counter using computer vision techniques.
 [![Tests](https://github.com/brewinn/Roadrunner-CellCounter/actions/workflows/tests.yml/badge.svg)](https://github.com/brewinn/Roadrunner-CellCounter/actions/workflows/tests.yml)
 ## Description
 
-A work-in-progress automated cell counter. Ultimately, the program will receive
-z-stacked microscope images as input, and return the cell count as output,
-possibly along with the set of points designating the cells in the image.
+A work-in-progress automated cell counter. This project is for CS-3793/5233 AI
+course of UTSA, taught by Dr. Kevin Desai. It was originally intended to work
+on 3D images in collaboration with Dr. Hye Young Lee and team for easier cell
+counting, but this project has been delayed, and will continued in a separate
+repository.
 
 ## Table of Contents
 
@@ -23,7 +25,9 @@ possibly along with the set of points designating the cells in the image.
 ## Installation
 
 To install, navigate to the project's root directory, and run `pip install
---editable .`.
+--editable .`. Note that the `requirements.txt` file lists specific versions of
+all libraries to use, but different versions of the libraries will likely
+function just as well.
 
 ### Removal
 
@@ -40,16 +44,19 @@ A simple convolutional neural network (CNN) model may be run with `python3
 cell_counter/cnn_cellcounter.py`, which will generate and train a CNN model on
 the synthetic image dataset, then display a graph along with some statistics.
 
+The usage of `fcrn_cellcounter.py` and `nalu_fcrn_cellcounter.py` is similar.
+
 Some tests have been implemented. They may be run with `python3
 run_tests.py`.
 
 ## Development
 
-Initial development will utilize a two-dimensional synthetic cell dataset
+Development will utilize a two-dimensional synthetic cell dataset
 ([Synthetic cells](https://bbbc.broadinstitute.org/BBBC005/)) to provide an
 abundance of training and testing instances for greater ease of development.
-Once either the initial methods have been satisfactorily implemented or the
-project deadline passes, the focus will return to more realistic datasets.
+
+Separate branches and forks have been made to facilitate development, but final
+implementations will be brought under this repository.
 
 ## Credits
 
@@ -58,7 +65,8 @@ Ginsberg, Alan Cabrera, and William Wells. This project was made as a part of
 CS-3793/5233 AI course of UTSA, taught by Dr. Kevin Desai. 
 
 We would also like to thank Dr. Hye Young Lee and team of UT Health for
-providing the inspiration and data for the project.
+providing the inspiration. Development of the 3D cell counter, while delayed,
+will continue nonetheless.
 
 The dataset used in the initial development is public domain, and available for download from the
 Broad Bioimage Benchmark Collection here: [Synthetic
@@ -76,29 +84,33 @@ Below is a list of currently implemented features:
   place, may be loaded in with a single function call.
 - Dataset preprocessing: A method from preprocessing the data has been
   implemented. It reduces the resolution of the images, and normalizes them to
-  a [0,1] scale.
+  a [0,1] scale. Additionally, images with specific qualities (e.g. a low
+  amount of blur) can be selected for specifically via a Pandas DataFrame.
 - Basic CNN model: A relatively simple model that can be built and run in about
   two minutes.
+- FCRN model: A fully convolutional regression network, based on the work of
+  [Rana *et al.*](https://github.com/ashishrana160796/nalu-cell-counting/blob/master/research-paper-tex/dual-page-latex-work/dual-page-latex-paper.pdf)
+- NALU-FCRN model: A FCRN network augmented with neural arithmetic logic units, based on the work of
+  [Rana *et al.*](https://github.com/ashishrana160796/nalu-cell-counting/blob/master/research-paper-tex/dual-page-latex-work/dual-page-latex-paper.pdf)
 
 ## To-do
 
 - [X] Dataset reading
 - [X] Preprocessing of datasets
-    - One preprocessing method has been implemented, and may be modified as
-      necessary
 - [ ] Implementation of methods
     - [X] Basic CNN
+    - [X] FCRN
+    - [X] NALU-FCRN
     - [ ] Other models
 - [ ] Result collection and analysis
 
 ## How to Contribute
 
-The project is not currently open to outside contributors.
-
 This project is conceived as part of the AI class for UTSA. This prohibits
 additional contributors during the first few months of the project. Once this
-period has passed, the project will be open to more collaborators.
+period has passed, the project will be open amendments.
 
 ## Project Status
 
-Work-in-progress. Basic features are on the way.
+Work-in-progress. Several models have been implemented, and the dataset may be
+preprocessed and filtered.
