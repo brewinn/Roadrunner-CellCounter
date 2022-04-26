@@ -9,6 +9,7 @@ cell_counter.egg-info
 
 # Ignore dataset
 resources/BBBC005_v1_images/
+resources/BBBC005_v1_ground_truth/
 resources/BBBC005_v1_images.zip
 
 # Ignore ctags
