@@ -5,7 +5,7 @@ from typing import List, Tuple
 import numpy as np
 
 # For accessing the dataset
-from cell_counter.import_dataset import load_synthetic_dataset
+from cell_counter.import_dataset import get_dataset_info, load_images_from_dataframe
 
 # For creating and using CNN
 import tensorflow as tf
@@ -27,10 +27,16 @@ def cnn_preprocess_data(
     dataset, including the preprocessed images.
 
     """
-    (training_images, training_labels), (
-        testing_images,
-        testing_labels,
-    ) = load_synthetic_dataset(path=path, num=num, resolution=(128, 128))
+
+    # Filter to only use images without blur
+    df = get_dataset_info()
+    df = df[df['blur']==1]
+
+    # Randomly select 'num' from the remaining images, without replacement
+    df = df.sample(n=num, replace=False)
+
+    # Return images and labels from dataframe
+    (training_images, training_labels), ( testing_images, testing_labels,) = load_images_from_dataframe(df, path=path, resolution=(128, 128))
 
     scale = 1 / float(255)
     for index, image in enumerate(training_images):
@@ -165,7 +171,7 @@ if __name__ == "__main__":
     compile_cnn(model)
 
     training_hist, _ = run_cnn(
-        model, epochs=25, image_number=2500, validation_split=0.1
+        model, epochs=10, image_number=250, validation_split=0.1, checkpointing=False
     )
 
     import matplotlib.pyplot as plt
