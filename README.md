@@ -97,21 +97,20 @@ Below is a list of currently implemented features:
 
 - [X] Dataset reading
 - [X] Preprocessing of datasets
-    - One preprocessing method has been implemented, and may be modified as
-      necessary
 - [ ] Implementation of methods
     - [X] Basic CNN
+    - [X] FCRN
+    - [X] NALU-FCRN
     - [ ] Other models
 - [ ] Result collection and analysis
 
 ## How to Contribute
 
-The project is not currently open to outside contributors.
-
 This project is conceived as part of the AI class for UTSA. This prohibits
 additional contributors during the first few months of the project. Once this
-period has passed, the project will be open to more collaborators.
+period has passed, the project will be open amendments.
 
 ## Project Status
 
-Work-in-progress. Basic features are on the way.
+Work-in-progress. Several models have been implemented, and the dataset may be
+preprocessed and filtered.
