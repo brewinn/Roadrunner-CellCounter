@@ -345,7 +345,7 @@ if __name__ == "__main__":
     compile_nalu_fcrn(model)
 
     training_hist, _ = run_nalu_fcrn(
-        model, epochs=10, image_number=250, validation_split=0.1, checkpointing=False
+        model, epochs=10, path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\', image_number=250, validation_split=0.1, checkpointing=False
     )
 
     import matplotlib.pyplot as plt

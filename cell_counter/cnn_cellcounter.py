@@ -29,7 +29,7 @@ def cnn_preprocess_data(
     """
 
     # Filter to only use images without blur
-    df = get_dataset_info()
+    df = get_dataset_info(path)
     df = df[df["blur"] == 1]
 
     # Randomly select 'num' from the remaining images, without replacement
@@ -174,7 +174,7 @@ if __name__ == "__main__":
     compile_cnn(model)
 
     training_hist, _ = run_cnn(
-        model, epochs=10, image_number=250, validation_split=0.1, checkpointing=False
+        model, epochs=10, path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\', image_number=250, validation_split=0.1, checkpointing=False
     )
 
     import matplotlib.pyplot as plt
