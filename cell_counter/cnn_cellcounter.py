@@ -29,7 +29,7 @@ def cnn_preprocess_data(
     """
 
     # Filter to only use images without blur
-    df = get_dataset_info()
+    df = get_dataset_info(path)
     df = df[df["blur"] == 1]
 
     # Randomly select 'num' from the remaining images, without replacement
