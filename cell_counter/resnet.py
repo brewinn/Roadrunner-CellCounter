@@ -11,9 +11,15 @@ from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, ZeroPadding2D,\
      Flatten, BatchNormalization, AveragePooling2D, Dense, Activation, Add 
 from tensorflow.keras import activations
 from tensorflow.keras.models import Model
+from tensorflow.keras.regularizers import l2
 
 # For importing the dataset
 from cell_counter.import_dataset import load_synthetic_dataset
+(train_im, train_lab), (test_im, test_lab) = tf.keras.datasets.cifar10.load_data()
+
+
+class_types = []
+train_im, test_im = train_im/255.0 , test_im/255.0
 
 def res_preprocess_data(path: str = None, num: int = 2500):
     (training_images, training_labels), (
@@ -203,12 +209,13 @@ def run_resnet(
 
 
 if __name__ == "__main__":
-    model = build_nalu_fcrn()
-    compile_nalu_fcrn(model)
+    model = resnet50()
+    #compile_nalu_fcrn(model)
 
     training_hist, _ = run_resnet(
         model, epochs=10, path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\', image_number=250, validation_split=0.1, checkpointing=False
-    )
+    ) 
+    #commented path to run on my pc, take out path to run on others
 
     import matplotlib.pyplot as plt
 
