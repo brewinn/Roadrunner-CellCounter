@@ -17,6 +17,7 @@ of a set of weights, or filters, and an
 array derived from an input image.
     Concatenation is what makes segmentation
 possible.
+
 tensorflow is a machine learning library
 keras is a neaural network library
 """
@@ -48,7 +49,7 @@ def unet_preprocess_data(path: str = None):
 
     """
     # Filter to only use images without blur
-    df = get_dataset_info()
+    df = get_dataset_info(path)
     df = df[df['blur']==1]
 
     # Randomly select 'num' from the remaining images, without replacement
