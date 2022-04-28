@@ -29,14 +29,17 @@ def cnn_preprocess_data(
     """
 
     # Filter to only use images without blur
-    df = get_dataset_info()
-    df = df[df['blur']==1]
+    df = get_dataset_info(path)
+    df = df[df["blur"] == 1]
 
     # Randomly select 'num' from the remaining images, without replacement
     df = df.sample(n=num, replace=False)
 
     # Return images and labels from dataframe
-    (training_images, training_labels), ( testing_images, testing_labels,) = load_images_from_dataframe(df, path=path, resolution=(128, 128))
+    (training_images, training_labels), (
+        testing_images,
+        testing_labels,
+    ) = load_images_from_dataframe(df, path=path, resolution=(128, 128))
 
     scale = 1 / float(255)
     for index, image in enumerate(training_images):

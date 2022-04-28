@@ -25,7 +25,7 @@ repository.
 ## Installation
 
 To install, navigate to the project's root directory, and run `pip install
---editable .`. Note that the `requirements.txt` file lists specific versions of
+--editable .`. Note that the *requirements.txt* file lists specific versions of
 all libraries to use, but different versions of the libraries will likely
 function just as well.
 
