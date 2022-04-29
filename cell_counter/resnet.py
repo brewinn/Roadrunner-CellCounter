@@ -27,13 +27,15 @@ class_types = ['airplane', 'automobile', 'bird', 'cat', 'deer',
 
 ##### Include Little Data Augmentation 
 batch_size = 64 # try several values
+'''
 get_dataset_info_categorical = tf.keras.utils.to_categorical(
     get_dataset_info, num_classes=10, dtype='uint8')
 
 load_images_from_dataframe_categorical = tf.keras.utils.to_categorical(
     load_images_from_dataframe, num_classes=10, dtype='uint8')
-    
+   
 from sklearn.model_selection import train_test_split 
+
 get_dataset_info, valid_im, get_dataset_info, valid_lab = train_test_split(get_dataset_info, get_dataset_info_categorical, test_size=0.20, 
                                                             stratify=get_dataset_info_categorical, 
                                                             random_state=40, shuffle = True)
@@ -47,13 +49,11 @@ valid_datagen = tf.keras.preprocessing.image.ImageDataGenerator()
 
 train_set_conv = train_DataGen.flow(get_dataset_info, get_dataset_info, batch_size=batch_size) # get_dataset_info is categorical 
 valid_set_conv = valid_datagen.flow(valid_im, valid_lab, batch_size=batch_size) # so as valid_lab 
+'''
 
 #module from resnet git
 def res_identity(x, filters): 
-  ''' renet block where dimension doesnot change.
-  The skip connection is just simple identity conncection
-  we will have 3 blocks and then input will be added
-  '''
+
   x_skip = x # this will be used for addition with the residual block 
   f1, f2 = filters
 
@@ -77,6 +77,7 @@ def res_identity(x, filters):
   x = Activation(activations.relu)(x)
 
   return x
+
 
 #module from resnet git
 def res_conv(x, s, filters):
@@ -327,7 +328,7 @@ if __name__ == "__main__":
         model, epochs=10, image_number=250, path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\',validation_split=0.1, checkpointing=False
     )
 
-    resnet50()
+    #resnet50()
     import matplotlib.pyplot as plt
 
     plt.plot(training_hist.history["mse"], label="mse")
@@ -336,6 +337,7 @@ if __name__ == "__main__":
     plt.ylabel("Mean Squared Error")
     plt.legend(loc="upper right")
     plt.show()
+    '''
 
     resnet50_model = resnet50()
     resnet50_model.summary()
@@ -375,5 +377,6 @@ if __name__ == "__main__":
     plt.tight_layout()
     #plt.savefig('/content/gdrive/My Drive/Colab Notebooks/resnet/train_acc.png', dpi=250)
     plt.show()
+    '''
 
                        
