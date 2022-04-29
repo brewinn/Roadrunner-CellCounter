@@ -283,7 +283,7 @@ lrdecay = tf.keras.callbacks.LearningRateScheduler(lrdecay) # learning rate deca
 
 def evaluate_model(model, name):
     import matplotlib.pyplot as plt
-
+    path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\'
     plt.plot(training_hist.history["mse"], label="mse")
     plt.plot(training_hist.history["val_mse"], label="val_mse")
     plt.xlabel("Epoch")
@@ -292,7 +292,7 @@ def evaluate_model(model, name):
     plt.savefig(name+'.png')
 
     # Test against blurless images
-    df = get_dataset_info()
+    df = get_dataset_info(path)
     df = df[df['blur']==1]
     df = df.sample(n=50, replace=False)
 
