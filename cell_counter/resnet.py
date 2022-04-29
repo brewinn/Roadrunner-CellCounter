@@ -1,3 +1,7 @@
+'''
+Amber Beserra Lib322
+Referenced from: https://github.com/suvoooo/Learn-TensorFlow/blob/master/resnet/Implement_Resnet_TensorFlow.ipynb
+'''
 # For type hinting
 from typing import List, Tuple
 
@@ -185,42 +189,6 @@ def resnet_preprocess_data(
         testing_labels,
     )
 
-
-def build_resnet():
-    """
-    Returns a resnetmodel for use on a preprocessed dataset.
-    Returns:
-    keras.engine.sequential.Sequential: The generated CNN.
-    """
-
-    preprocessed_image_shape = (128, 128, 1)
-    cnn_filter = 16
-    cnn_pool_size = 2
-    kernal = (3, 3)
-    dropout_rate = 0.2
-
-    from tensorflow.keras import Sequential, layers
-
-    model = Sequential()
-
-    model.add(
-        layers.Conv2D(
-            cnn_filter, kernal, activation="relu", input_shape=preprocessed_image_shape
-        )
-    )
-    model.add(layers.MaxPooling2D(pool_size=cnn_pool_size))
-    model.add(layers.Dropout(dropout_rate))
-    model.add(layers.Conv2D(2 * cnn_filter, kernal, activation="relu"))
-    model.add(layers.MaxPooling2D(pool_size=cnn_pool_size))
-    model.add(layers.Conv2D(2 * cnn_filter, kernal, activation="relu"))
-
-    model.add(layers.Flatten())
-    model.add(layers.Dense(64))
-    model.add(layers.Dense(1, activation="relu"))
-
-    return model
-
-
 def compile_resnet(model):
     """
     Compiles the resnetmodel.
@@ -322,81 +290,17 @@ if __name__ == "__main__":
         model, epochs=10, image_number=250, path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\',validation_split=0.1, checkpointing=False
     )
 
-    
+    print(model.summary())
     import matplotlib.pyplot as plt
-    '''
+
+    
     plt.plot(training_hist.history["mse"], label="mse")
     plt.plot(training_hist.history["val_mse"], label="val_mse")
+    plt.title("ResNet")
     plt.xlabel("Epoch")
     plt.ylabel("Mean Squared Error")
     plt.legend(loc="upper right")
     plt.show()
-    '''
+
     
-    #resnet50_model = resnet50()
-    #print(resnet50_model.summary())
-    print(model.summary())
-    
-    model.summary()
-    model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate=1e-3), 
-                       metrics=['acc'])
-
-    from sklearn.model_selection import train_test_split 
-    train_lab_categorical = tf.keras.utils.to_categorical(
-    get_dataset_info, num_classes=10, dtype='uint8')
-
-    test_lab_categorical = tf.keras.utils.to_categorical(
-    get_dataset_info, num_classes=10, dtype='uint8')
-    get_dataset_info, valid_im, train_lab, valid_lab = train_test_split(get_dataset_info, train_lab_categorical, test_size=0.20, 
-                                                            stratify=train_lab_categorical, 
-                                                            random_state=40, shuffle = True)
-
-    batch_size = 64 # try several values
-    batch_size=batch_size # test with 64, 128, 256
-
-
-    train_DataGen = tf.keras.preprocessing.image.ImageDataGenerator(zoom_range=0.2, 
-                                                                width_shift_range=0.1, 
-                                                                height_shift_range = 0.1, 
-                                                                horizontal_flip=True)
-
-    valid_datagen = tf.keras.preprocessing.image.ImageDataGenerator()
-    train_set_conv = train_DataGen.flow(get_dataset_info, get_dataset_info, batch_size=batch_size) # train_lab is categor
-    valid_set_conv = valid_datagen.flow(valid_im, valid_lab, batch_size=batch_size) # so as valid_lab
-
-    resnet_train = model.fit(train_set_conv, 
-                                  epochs=160, 
-                                  steps_per_epoch=get_dataset_info.shape[0]/batch_size, 
-                                  validation_steps=valid_im.shape[0]/batch_size, 
-                                  validation_data=valid_set_conv, 
-                                  callbacks=[lrdecay])
-                                  
-    loss = resnet_train.history['loss']
-    v_loss = resnet_train.history['val_loss']
-
-    acc = resnet_train.history['acc']
-    v_acc = resnet_train.history['val_acc']
-    
-    epochs = range(len(loss))
-    
-    fig = plt.figure(figsize=(9, 5))
-    plt.subplot(1, 2, 1)
-    plt.yscale('log')
-    plt.plot(epochs, loss, linestyle='--', linewidth=3, color='orange', alpha=0.7, label='Train Loss')
-    plt.plot(epochs, v_loss, linestyle='-.', linewidth=2, color='lime', alpha=0.8, label='Valid Loss')
-    plt.ylim(0.3, 100)
-    plt.xlabel('Epochs', fontsize=11)
-    plt.ylabel('Loss', fontsize=12)
-    plt.legend(fontsize=12)
-    plt.subplot(1, 2, 2)
-    plt.plot(epochs, acc, linestyle='--', linewidth=3, color='orange', alpha=0.7, label='Train Acc')
-    plt.plot(epochs, v_acc, linestyle='-.', linewidth=2, color='lime', alpha=0.8, label='Valid Acc') 
-    plt.xlabel('Epochs', fontsize=11)
-    plt.ylabel('Accuracy', fontsize=12)
-    plt.legend(fontsize=12)
-    plt.tight_layout()
-    #plt.savefig('/content/gdrive/My Drive/Colab Notebooks/resnet/train_acc.png', dpi=250)
-    plt.show()
-    
-
                        
