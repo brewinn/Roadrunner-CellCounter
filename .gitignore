@@ -20,3 +20,6 @@ resources/checkpoints
 
 # Ignore dataset_info.csv, as it can be generated and changed frequently
 resources/dataset_info.csv
+
+# Do not save generated plots
+*.png
