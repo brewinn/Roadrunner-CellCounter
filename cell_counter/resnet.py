@@ -91,9 +91,9 @@ def res_conv(x, s, filters):
 #module from resnet git
 def resnet50():
 
-  #input_im = Input(shape=(get_dataset_info.shape[1], get_dataset_info.shape[2], get_dataset_info.shape[3])) # cifar 10 images size
-  preprocessed_image_shape = (128, 128, 1)
-  x = ZeroPadding2D(padding=(3, 3))(preprocessed_image_shape)
+  preprocessed_image_shape=(128,128,1)
+  input_im = Input(shape=preprocessed_image_shape)
+  x = ZeroPadding2D(padding=(3, 3))(input_im)
 
   # 1st stage
   # here we perform maxpooling, see the figure above
@@ -142,8 +142,8 @@ def resnet50():
   x = Dense(1, activation='relu')(x)
   # define the model 
 
-  #model = Model(inputs=input_im, outputs=x, name='Resnet50')
-  model = Model(inputs=preprocessed_image_shape, outputs=x, name='Resnet50')
+  model = Model(inputs=input_im, outputs=x, name='Resnet50')
+  #model = Model(inputs=preprocessed_image_shape, outputs=x, name='Resnet50')
 
   return model
 
@@ -334,6 +334,8 @@ if __name__ == "__main__":
     '''
     
     resnet50_model = resnet50()
+    print(resnet50_model.summary())
+
     '''
     resnet50_model.summary()
     resnet50_model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate=1e-3), 
