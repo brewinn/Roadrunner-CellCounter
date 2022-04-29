@@ -188,7 +188,7 @@ def resnet_preprocess_data(
 
 def build_resnet():
     """
-    Returns a CNN model for use on a preprocessed dataset.
+    Returns a resnetmodel for use on a preprocessed dataset.
     Returns:
     keras.engine.sequential.Sequential: The generated CNN.
     """
@@ -223,9 +223,9 @@ def build_resnet():
 
 def compile_resnet(model):
     """
-    Compiles the CNN model.
+    Compiles the resnetmodel.
     Parameters:
-    model: The CNN to be compiled.
+    model: The resnetto be compiled.
     """
     model.compile(optimizer="adam", loss="mean_squared_error", metrics=["mse"])
 
@@ -241,9 +241,9 @@ def run_resnet(
     verbose: int = 2,
 ):
     """
-    Runs the CNN model.
+    Runs the resnetmodel.
     Parameters:
-    model: The CNN model to run.
+    model: The resnetmodel to run.
     path (str): Path to dataset. Defaults to the path described in Usage if none given.
     image_number (int): The number of images to use from the dataset.
     checkpointing (bool): Whether or not to save the model weights.
@@ -332,8 +332,9 @@ if __name__ == "__main__":
     plt.legend(loc="upper right")
     plt.show()
     '''
-
+    
     resnet50_model = resnet50()
+    '''
     resnet50_model.summary()
     resnet50_model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate=1e-3), 
                        metrics=['acc'])
@@ -348,7 +349,7 @@ if __name__ == "__main__":
                                                             stratify=train_lab_categorical, 
                                                             random_state=40, shuffle = True)
 
-    
+    batch_size = 64 # try several values
     batch_size=batch_size # test with 64, 128, 256
 
 
@@ -375,7 +376,7 @@ if __name__ == "__main__":
     v_acc = resnet_train.history['val_acc']
     
     epochs = range(len(loss))
-
+    
     fig = plt.figure(figsize=(9, 5))
     plt.subplot(1, 2, 1)
     plt.yscale('log')
@@ -394,6 +395,6 @@ if __name__ == "__main__":
     plt.tight_layout()
     #plt.savefig('/content/gdrive/My Drive/Colab Notebooks/resnet/train_acc.png', dpi=250)
     plt.show()
-    
+    '''
 
                        
