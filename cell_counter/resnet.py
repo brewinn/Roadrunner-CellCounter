@@ -315,7 +315,7 @@ lrdecay = tf.keras.callbacks.LearningRateScheduler(lrdecay) # learning rate deca
 
 
 if __name__ == "__main__":
-    model = build_resnet()
+    model = resnet50()
     compile_resnet(model)
 
     training_hist, _ = run_resnet(
@@ -333,9 +333,9 @@ if __name__ == "__main__":
     plt.show()
     '''
     
-    resnet50_model = resnet50()
-    print(resnet50_model.summary())
-
+    #resnet50_model = resnet50()
+    #print(resnet50_model.summary())
+    print(model.summary())
     '''
     resnet50_model.summary()
     resnet50_model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate=1e-3), 
