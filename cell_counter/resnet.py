@@ -7,7 +7,7 @@ from typing import List, Tuple
 
 # For image preprocessing
 import numpy as np
-
+import pandas as pd
 # For accessing the dataset
 from cell_counter.import_dataset import get_dataset_info, load_images_from_dataframe
 
@@ -152,7 +152,7 @@ def resnet50():
   return model
 
 def resnet_preprocess_data(
-    path: str = None, num: int = 2500
+    path: str = None, num: int = 2500, df = pd.DataFrame(), split=0.1
 ) -> Tuple[Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]:
     """
     Reduce the resolution, and normalize the images in the dataset.
@@ -160,23 +160,26 @@ def resnet_preprocess_data(
     Parameters:
     path (str): Path to images.
     num (int): Total number of images to import from the dataset.
+    df (pd.DataFrame): Images to use, if any.
+    split (float): Proportion of images to use for testing.
     Returns:
     Tuple[Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]: The
     dataset, including the preprocessed images.
     """
 
-    # Filter to only use images without blur
-    df = get_dataset_info(path)
-    df = df[df["blur"] == 1]
+    if len(df.columns) == 0:
+        # Filter to only use images without blur
+        df = get_dataset_info(path)
+        df = df[df["blur"] == 1]
 
-    # Randomly select 'num' from the remaining images, without replacement
-    df = df.sample(n=num, replace=False)
+        # Randomly select 'num' from the remaining images, without replacement
+        df = df.sample(n=num, replace=False)
 
     # Return images and labels from dataframe
     (training_images, training_labels), (
         testing_images,
         testing_labels,
-    ) = load_images_from_dataframe(df, path=path, resolution=(128, 128))
+    ) = load_images_from_dataframe(df, path=path, resolution=(128, 128), split=split)
 
     scale = 1 / float(255)
     for index, image in enumerate(training_images):
@@ -188,6 +191,7 @@ def resnet_preprocess_data(
         testing_images,
         testing_labels,
     )
+
 
 def compile_resnet(model):
     """
@@ -207,6 +211,7 @@ def run_resnet(
     epochs: int = 10,
     validation_split: float = 0.0,
     verbose: int = 2,
+    df:pd.DataFrame = pd.DataFrame()
 ):
     """
     Runs the resnetmodel.
@@ -226,7 +231,8 @@ def run_resnet(
     (training_images, training_labels), (
         testing_images,
         testing_labels,
-    ) = resnet_preprocess_data(path=path, num=image_number)
+    ) = resnet_preprocess_data(path=path, num=image_number, df=df)
+
     if checkpointing:
         if not checkpoint_path:
             import os
