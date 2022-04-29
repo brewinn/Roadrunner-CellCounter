@@ -162,8 +162,9 @@ def resnet50():
   x = AveragePooling2D((2, 2), padding='same')(x)
 
   x = Flatten()(x)
-  x = Dense(len(class_types), activation='softmax', kernel_initializer='he_normal')(x) #multi-class
-
+  #x = Dense(len(class_types), activation='softmax', kernel_initializer='he_normal')(x) #multi-class
+  x = Dense(64)(x)
+  x = Dense(1, activation='relu')(x)
   # define the model 
 
   #model = Model(inputs=input_im, outputs=x, name='Resnet50')
@@ -323,14 +324,14 @@ def run_resnet(
 if __name__ == "__main__":
     model = build_resnet()
     compile_resnet(model)
-    #resnet50()
+
     training_hist, _ = run_resnet(
         model, epochs=10, image_number=250, path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\',validation_split=0.1, checkpointing=False
     )
 
-    #resnet50()
+    
     import matplotlib.pyplot as plt
-
+    '''
     plt.plot(training_hist.history["mse"], label="mse")
     plt.plot(training_hist.history["val_mse"], label="val_mse")
     plt.xlabel("Epoch")
@@ -345,18 +346,20 @@ if __name__ == "__main__":
                        metrics=['acc'])
 
     batch_size=batch_size # test with 64, 128, 256
+    '''
     resnet_train = resnet50_model.fit(train_set_conv, 
                                   epochs=160, 
                                   steps_per_epoch=get_dataset_info.shape[0]/batch_size, 
                                   validation_steps=valid_im.shape[0]/batch_size, 
                                   validation_data=valid_set_conv, 
                                   callbacks=[lrdecay])
+                                  
     loss = resnet_train.history['loss']
     v_loss = resnet_train.history['val_loss']
 
     acc = resnet_train.history['acc']
     v_acc = resnet_train.history['val_acc']
-
+    '''
     epochs = range(len(loss))
 
     fig = plt.figure(figsize=(9, 5))
@@ -377,6 +380,6 @@ if __name__ == "__main__":
     plt.tight_layout()
     #plt.savefig('/content/gdrive/My Drive/Colab Notebooks/resnet/train_acc.png', dpi=250)
     plt.show()
-    '''
+    
 
                        
