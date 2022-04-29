@@ -85,8 +85,8 @@ def build_unet():
     """
 
     preprocessed_image_shape = (128, 128, 1)
-    
 
+    #referred to https://github.com/zhixuhao/unet/blob/master/model.py
     inputs = Input(pretrained_weights=None, input_size=preprocessed_image_shape)
     conv1 = Conv2D(64, 3, activation='relu', padding='same',
                    kernel_initializer='he_normal')(inputs)
