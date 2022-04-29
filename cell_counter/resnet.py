@@ -281,16 +281,65 @@ def lrdecay(epoch):
   #   return 0.01 * np.math.exp(0.03 * (40 - epoch))
 lrdecay = tf.keras.callbacks.LearningRateScheduler(lrdecay) # learning rate decay  
 
+def evaluate_model(model, name):
+    import matplotlib.pyplot as plt
+
+    plt.plot(training_hist.history["mse"], label="mse")
+    plt.plot(training_hist.history["val_mse"], label="val_mse")
+    plt.xlabel("Epoch")
+    plt.ylabel("Mean Squared Error")
+    plt.legend(loc="upper right")
+    plt.savefig(name+'.png')
+
+    # Test against blurless images
+    df = get_dataset_info()
+    df = df[df['blur']==1]
+    df = df.sample(n=50, replace=False)
+
+    print("Evaluating against blurless images...")
+    (_,_),(test_im, test_lab) = resnet_preprocess_data(df=df, split=1)
+    results = model.evaluate(test_im, test_lab, batch_size=1)
+
+    # Test against random images
+    df = get_dataset_info()
+    df = df.sample(n=50, replace=False)
+
+    print("Evaluating against random images...")
+    (_,_),(test_im, test_lab) = resnet_preprocess_data(df=df, split=1)
+    results = model.evaluate(test_im, test_lab, batch_size=1)
 
 if __name__ == "__main__":
+    
     model = resnet50()
+    
     compile_resnet(model)
 
     training_hist, _ = run_resnet(
         model, epochs=10, image_number=250, path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\',validation_split=0.1, checkpointing=False
     )
-
+    
+    '''
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    print('High training size, no blur')
+    model = resnet50()
+    compile_resnet(model)
+    training_hist, _ = run_resnet(
+        model, epochs=10,path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\', image_number=1000, validation_split=0.1, checkpointing=False
+    )
+    '''
+    evaluate_model(model, 'resnet_h_n')
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     print(model.summary())
+    
     import matplotlib.pyplot as plt
 
     
