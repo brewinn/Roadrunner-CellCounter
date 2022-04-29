@@ -1,7 +1,7 @@
 """
 author: alan cabrera
 references:
-1.https://arxiv.org/pdf/1505.04597.pdf
+1.https://arxiv.org/pdf/1505.04597.pdf (the original research paper)
 2.https://machinelearningmastery.com/convolutional-layers-for-deep-learning-neural-networks/
 3.https://towardsdatascience.com/unet-line-by-line-explanation-9b191c76baf5
 4.https://github.com/ashishrana160796/nalu-cell-counting/blob/master/exploring-cell-counting/model.py
@@ -79,9 +79,9 @@ def unet_preprocess_data(path: str = None, num: int = 2500):
         testing_images,
         testing_labels,
     )
-# The original U-Net architecture,
-# from https://github.com/zhixuhao/unet/blob/master/model.py
 
+# The original U-Net implementation.
+# from https://github.com/zhixuhao/unet/blob/master/model.py
 
 def build_unet():
     """
@@ -175,9 +175,13 @@ def build_unet():
         model.load_weights(pretrained_weights)
 
     return model
-# The modified U-Net architecture,
-# based on https://github.com/zhixuhao/unet/blob/master/model.py
 
+# The modified U-Net architecture, which truncates the decoding 
+# part(where upsampling occurs) and uses output from the encoder
+# section (where downsampling occurs) as input to a simple CNN
+# in order to get a count of the segemented objects.
+#
+# based on https://github.com/zhixuhao/unet/blob/master/model.py
 
 def build_modified_unet():
     """
@@ -187,7 +191,6 @@ def build_modified_unet():
     keras Model class: The generated U-Net codel.
 
     """
-
     preprocessed_image_shape = (128, 128, 1)
 
     inputs = Input(preprocessed_image_shape)
@@ -196,29 +199,32 @@ def build_modified_unet():
     conv1 = Conv2D(64, 3, activation='relu', padding='same',
                    kernel_initializer='he_normal')(conv1)
     pool1 = MaxPooling2D(pool_size=(2, 2))(conv1)
+    # =========================================================================
     conv2 = Conv2D(128, 3, activation='relu', padding='same',
                    kernel_initializer='he_normal')(pool1)
     conv2 = Conv2D(128, 3, activation='relu', padding='same',
                    kernel_initializer='he_normal')(conv2)
     pool2 = MaxPooling2D(pool_size=(2, 2))(conv2)
+    # =========================================================================
     conv3 = Conv2D(256, 3, activation='relu', padding='same',
                    kernel_initializer='he_normal')(pool2)
     conv3 = Conv2D(256, 3, activation='relu', padding='same',
                    kernel_initializer='he_normal')(conv3)
     pool3 = MaxPooling2D(pool_size=(2, 2))(conv3)
+    # =========================================================================
     conv4 = Conv2D(512, 3, activation='relu', padding='same',
                    kernel_initializer='he_normal')(pool3)
     conv4 = Conv2D(512, 3, activation='relu', padding='same',
                    kernel_initializer='he_normal')(conv4)
     drop4 = Dropout(0.5)(conv4)
     pool4 = MaxPooling2D(pool_size=(2, 2))(drop4)
-
+    # =========================================================================
     conv5 = Conv2D(1024, 3, activation='relu', padding='same',
                    kernel_initializer='he_normal')(pool4)
     conv5 = Conv2D(1024, 3, activation='relu', padding='same',
                    kernel_initializer='he_normal')(conv5)
     drop5 = Dropout(0.5)(conv5)
-
+    # =========================================================================
     up6 = Conv2D(512, 2, activation='relu', padding='same',
                  kernel_initializer='he_normal')(UpSampling2D(size=(2, 2))(drop5))
     merge6 = concatenate([drop4, up6], axis=3)
@@ -226,7 +232,7 @@ def build_modified_unet():
                    kernel_initializer='he_normal')(merge6)
     conv6 = Conv2D(512, 3, activation='relu', padding='same',
                    kernel_initializer='he_normal')(conv6)
-
+    # =========================================================================
     up7 = Conv2D(256, 2, activation='relu', padding='same',
                  kernel_initializer='he_normal')(UpSampling2D(size=(2, 2))(conv6))
     merge7 = concatenate([conv3, up7], axis=3)
@@ -234,7 +240,6 @@ def build_modified_unet():
                    kernel_initializer='he_normal')(merge7)
     conv7 = Conv2D(256, 3, activation='relu', padding='same',
                    kernel_initializer='he_normal')(conv7)
-    
     # =========================================================================
     # Append simple cnn to reduce the final output to appropriate dimensions as 
     # suggested by my team leader, Brendan Winn. Implementated in 
