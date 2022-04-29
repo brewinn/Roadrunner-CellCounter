@@ -25,31 +25,6 @@ from tensorflow.keras.regularizers import l2
 class_types = ['airplane', 'automobile', 'bird', 'cat', 'deer',
                'dog', 'frog', 'horse', 'ship', 'truck']
 
-##### Include Little Data Augmentation 
-batch_size = 64 # try several values
-'''
-get_dataset_info_categorical = tf.keras.utils.to_categorical(
-    get_dataset_info, num_classes=10, dtype='uint8')
-
-load_images_from_dataframe_categorical = tf.keras.utils.to_categorical(
-    load_images_from_dataframe, num_classes=10, dtype='uint8')
-   
-from sklearn.model_selection import train_test_split 
-
-get_dataset_info, valid_im, get_dataset_info, valid_lab = train_test_split(get_dataset_info, get_dataset_info_categorical, test_size=0.20, 
-                                                            stratify=get_dataset_info_categorical, 
-                                                            random_state=40, shuffle = True)
-                                                            
-train_DataGen = tf.keras.preprocessing.image.ImageDataGenerator(zoom_range=0.2, 
-                                                                width_shift_range=0.1, 
-                                                                height_shift_range = 0.1, 
-                                                                horizontal_flip=True)
- 
-valid_datagen = tf.keras.preprocessing.image.ImageDataGenerator()
-
-train_set_conv = train_DataGen.flow(get_dataset_info, get_dataset_info, batch_size=batch_size) # get_dataset_info is categorical 
-valid_set_conv = valid_datagen.flow(valid_im, valid_lab, batch_size=batch_size) # so as valid_lab 
-'''
 
 #module from resnet git
 def res_identity(x, filters): 
@@ -319,6 +294,24 @@ def run_resnet(
     )
     return training_history, testing_evaluation
 
+### Define some Callbacks
+def lrdecay(epoch):
+    lr = 1e-3
+    if epoch > 180:
+        lr *= 0.5e-3
+    elif epoch > 160:
+        lr *= 1e-3
+    elif epoch > 120:
+        lr *= 1e-2
+    elif epoch > 80:
+        lr *= 1e-1
+    #print('Learning rate: ', lr)
+    return lr
+  # if epoch < 40:
+  #   return 0.01
+  # else:
+  #   return 0.01 * np.math.exp(0.03 * (40 - epoch))
+lrdecay = tf.keras.callbacks.LearningRateScheduler(lrdecay) # learning rate decay  
 
 
 if __name__ == "__main__":
@@ -345,8 +338,29 @@ if __name__ == "__main__":
     resnet50_model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate=1e-3), 
                        metrics=['acc'])
 
+    from sklearn.model_selection import train_test_split 
+    train_lab_categorical = tf.keras.utils.to_categorical(
+    get_dataset_info, num_classes=10, dtype='uint8')
+
+    test_lab_categorical = tf.keras.utils.to_categorical(
+    get_dataset_info, num_classes=10, dtype='uint8')
+    get_dataset_info, valid_im, train_lab, valid_lab = train_test_split(get_dataset_info, train_lab_categorical, test_size=0.20, 
+                                                            stratify=train_lab_categorical, 
+                                                            random_state=40, shuffle = True)
+
+    
     batch_size=batch_size # test with 64, 128, 256
-    '''
+
+
+    train_DataGen = tf.keras.preprocessing.image.ImageDataGenerator(zoom_range=0.2, 
+                                                                width_shift_range=0.1, 
+                                                                height_shift_range = 0.1, 
+                                                                horizontal_flip=True)
+
+    valid_datagen = tf.keras.preprocessing.image.ImageDataGenerator()
+    train_set_conv = train_DataGen.flow(get_dataset_info, get_dataset_info, batch_size=batch_size) # train_lab is categor
+    valid_set_conv = valid_datagen.flow(valid_im, valid_lab, batch_size=batch_size) # so as valid_lab
+
     resnet_train = resnet50_model.fit(train_set_conv, 
                                   epochs=160, 
                                   steps_per_epoch=get_dataset_info.shape[0]/batch_size, 
@@ -359,7 +373,7 @@ if __name__ == "__main__":
 
     acc = resnet_train.history['acc']
     v_acc = resnet_train.history['val_acc']
-    '''
+    
     epochs = range(len(loss))
 
     fig = plt.figure(figsize=(9, 5))
