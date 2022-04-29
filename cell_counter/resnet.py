@@ -336,9 +336,9 @@ if __name__ == "__main__":
     #resnet50_model = resnet50()
     #print(resnet50_model.summary())
     print(model.summary())
-    '''
-    resnet50_model.summary()
-    resnet50_model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate=1e-3), 
+    
+    model.summary()
+    model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate=1e-3), 
                        metrics=['acc'])
 
     from sklearn.model_selection import train_test_split 
@@ -364,7 +364,7 @@ if __name__ == "__main__":
     train_set_conv = train_DataGen.flow(get_dataset_info, get_dataset_info, batch_size=batch_size) # train_lab is categor
     valid_set_conv = valid_datagen.flow(valid_im, valid_lab, batch_size=batch_size) # so as valid_lab
 
-    resnet_train = resnet50_model.fit(train_set_conv, 
+    resnet_train = model.fit(train_set_conv, 
                                   epochs=160, 
                                   steps_per_epoch=get_dataset_info.shape[0]/batch_size, 
                                   validation_steps=valid_im.shape[0]/batch_size, 
@@ -397,6 +397,6 @@ if __name__ == "__main__":
     plt.tight_layout()
     #plt.savefig('/content/gdrive/My Drive/Colab Notebooks/resnet/train_acc.png', dpi=250)
     plt.show()
-    '''
+    
 
                        
