@@ -1,48 +1,59 @@
-# referenced from 
-# https://towardsdatascience.com/understand-and-implement-resnet-50-with-tensorflow-2-0-1190b9b52691
-# https://github.com/suvoooo/Learn-TensorFlow/blob/master/resnet/Implement_Resnet_TensorFlow.ipynb
+# For type hinting
+from typing import List, Tuple
 
-import matplotlib.pyplot as plt
+# For image preprocessing
 import numpy as np
-import tensorflow as tf
-from tensorflow import keras
 
+# For accessing the dataset
+from cell_counter.import_dataset import get_dataset_info, load_images_from_dataframe
+
+#(get_dataset_info, get_dataset_info), (load_images_from_dataframe, load_images_from_dataframe) = tf.cell_counter.import_dataset
+#get_dataset_info, load_images_from_dataframe = get_dataset_info/255.0 , load_images_from_dataframe/255.0
+
+# For creating and using CNN
+import tensorflow as tf
+
+#resnet imports
 from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, ZeroPadding2D,\
      Flatten, BatchNormalization, AveragePooling2D, Dense, Activation, Add 
-from tensorflow.keras import activations
 from tensorflow.keras.models import Model
+from tensorflow.keras import activations
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.callbacks import EarlyStopping
 from tensorflow.keras.regularizers import l2
 
-# For importing the dataset
-from cell_counter.import_dataset import load_synthetic_dataset
-(train_im, train_lab), (test_im, test_lab) = tf.keras.datasets.cifar10.load_data()
+class_types = ['airplane', 'automobile', 'bird', 'cat', 'deer',
+               'dog', 'frog', 'horse', 'ship', 'truck']
 
+##### Include Little Data Augmentation 
+batch_size = 64 # try several values
+get_dataset_info_categorical = tf.keras.utils.to_categorical(
+    get_dataset_info, num_classes=10, dtype='uint8')
 
-class_types = []
-train_im, test_im = train_im/255.0 , test_im/255.0
+load_images_from_dataframe_categorical = tf.keras.utils.to_categorical(
+    load_images_from_dataframe, num_classes=10, dtype='uint8')
+    
+from sklearn.model_selection import train_test_split 
+get_dataset_info, valid_im, get_dataset_info, valid_lab = train_test_split(get_dataset_info, get_dataset_info_categorical, test_size=0.20, 
+                                                            stratify=get_dataset_info_categorical, 
+                                                            random_state=40, shuffle = True)
+                                                            
+train_DataGen = tf.keras.preprocessing.image.ImageDataGenerator(zoom_range=0.2, 
+                                                                width_shift_range=0.1, 
+                                                                height_shift_range = 0.1, 
+                                                                horizontal_flip=True)
+ 
+valid_datagen = tf.keras.preprocessing.image.ImageDataGenerator()
 
-def res_preprocess_data(path: str = None, num: int = 2500):
-    (training_images, training_labels), (
-        testing_images,
-        testing_labels,
-    ) = load_synthetic_dataset(path=path, num=num, resolution=(128, 128))
+train_set_conv = train_DataGen.flow(get_dataset_info, get_dataset_info, batch_size=batch_size) # get_dataset_info is categorical 
+valid_set_conv = valid_datagen.flow(valid_im, valid_lab, batch_size=batch_size) # so as valid_lab 
 
-    scale = 1 / float(255)
-    for index, image in enumerate(training_images):
-        training_images[index] = image * scale
-    for index, image in enumerate(testing_images):
-        testing_images[index] = image * scale
-
-    return (training_images, training_labels), (
-        testing_images,
-        testing_labels,
-    )
-
+#module from resnet git
 def res_identity(x, filters): 
-  #renet block where dimension doesnot change.
-  #The skip connection is just simple identity conncection
-  #we will have 3 blocks and then input will be added
-
+  ''' renet block where dimension doesnot change.
+  The skip connection is just simple identity conncection
+  we will have 3 blocks and then input will be added
+  '''
   x_skip = x # this will be used for addition with the residual block 
   f1, f2 = filters
 
@@ -67,9 +78,12 @@ def res_identity(x, filters):
 
   return x
 
+#module from resnet git
 def res_conv(x, s, filters):
   '''
-  here the input size changes''' 
+  here the input size changes, when it goes via conv blocks
+  so the skip connection uses a projection (conv layer) matrix
+  ''' 
   x_skip = x
   f1, f2 = filters
 
@@ -98,11 +112,12 @@ def res_conv(x, s, filters):
 
   return x
 
-
+#module from resnet git
 def resnet50():
 
-  input_im = Input(shape=(train_im.shape[1], train_im.shape[2], train_im.shape[3])) # cifar 10 images size
-  x = ZeroPadding2D(padding=(3, 3))(input_im)
+  #input_im = Input(shape=(get_dataset_info.shape[1], get_dataset_info.shape[2], get_dataset_info.shape[3])) # cifar 10 images size
+  preprocessed_image_shape = (128, 128, 1)
+  x = ZeroPadding2D(padding=(3, 3))(preprocessed_image_shape)
 
   # 1st stage
   # here we perform maxpooling, see the figure above
@@ -150,9 +165,92 @@ def resnet50():
 
   # define the model 
 
-  model = Model(inputs=input_im, outputs=x, name='Resnet50')
+  #model = Model(inputs=input_im, outputs=x, name='Resnet50')
+  model = Model(inputs=preprocessed_image_shape, outputs=x, name='Resnet50')
 
   return model
+
+def resnet_preprocess_data(
+    path: str = None, num: int = 2500
+) -> Tuple[Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]:
+    """
+    Reduce the resolution, and normalize the images in the dataset.
+    Modification is in-place.
+    Parameters:
+    path (str): Path to images.
+    num (int): Total number of images to import from the dataset.
+    Returns:
+    Tuple[Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]: The
+    dataset, including the preprocessed images.
+    """
+
+    # Filter to only use images without blur
+    df = get_dataset_info(path)
+    df = df[df["blur"] == 1]
+
+    # Randomly select 'num' from the remaining images, without replacement
+    df = df.sample(n=num, replace=False)
+
+    # Return images and labels from dataframe
+    (training_images, training_labels), (
+        testing_images,
+        testing_labels,
+    ) = load_images_from_dataframe(df, path=path, resolution=(128, 128))
+
+    scale = 1 / float(255)
+    for index, image in enumerate(training_images):
+        training_images[index] = image * scale
+    for index, image in enumerate(testing_images):
+        testing_images[index] = image * scale
+
+    return (training_images, training_labels), (
+        testing_images,
+        testing_labels,
+    )
+
+
+def build_resnet():
+    """
+    Returns a CNN model for use on a preprocessed dataset.
+    Returns:
+    keras.engine.sequential.Sequential: The generated CNN.
+    """
+
+    preprocessed_image_shape = (128, 128, 1)
+    cnn_filter = 16
+    cnn_pool_size = 2
+    kernal = (3, 3)
+    dropout_rate = 0.2
+
+    from tensorflow.keras import Sequential, layers
+
+    model = Sequential()
+
+    model.add(
+        layers.Conv2D(
+            cnn_filter, kernal, activation="relu", input_shape=preprocessed_image_shape
+        )
+    )
+    model.add(layers.MaxPooling2D(pool_size=cnn_pool_size))
+    model.add(layers.Dropout(dropout_rate))
+    model.add(layers.Conv2D(2 * cnn_filter, kernal, activation="relu"))
+    model.add(layers.MaxPooling2D(pool_size=cnn_pool_size))
+    model.add(layers.Conv2D(2 * cnn_filter, kernal, activation="relu"))
+
+    model.add(layers.Flatten())
+    model.add(layers.Dense(64))
+    model.add(layers.Dense(1, activation="relu"))
+
+    return model
+
+
+def compile_resnet(model):
+    """
+    Compiles the CNN model.
+    Parameters:
+    model: The CNN to be compiled.
+    """
+    model.compile(optimizer="adam", loss="mean_squared_error", metrics=["mse"])
 
 
 def run_resnet(
@@ -165,19 +263,31 @@ def run_resnet(
     validation_split: float = 0.0,
     verbose: int = 2,
 ):
-
+    """
+    Runs the CNN model.
+    Parameters:
+    model: The CNN model to run.
+    path (str): Path to dataset. Defaults to the path described in Usage if none given.
+    image_number (int): The number of images to use from the dataset.
+    checkpointing (bool): Whether or not to save the model weights.
+    checkpoint_path (str): The path to save the checkpoints to.
+    epochs (int): Number of epochs to run.
+    validation_split (float): Proportion of images to use as a validation set.
+    vebose (int): Verbosity of model training and evaluation.
+    Returns:
+    training_history: The model's training statistics.
+    testing_evaluation: The model's testing statistics.
+    """
     (training_images, training_labels), (
         testing_images,
         testing_labels,
-    ) = res_preprocess_data(path=path, num=image_number)
+    ) = resnet_preprocess_data(path=path, num=image_number)
     if checkpointing:
         if not checkpoint_path:
             import os
 
             counter_dir = os.path.dirname(__file__)
-            checkpoint_path = (
-                counter_dir + "/../resources/checkpoints/res_cp.ckpt"
-            )
+            checkpoint_path = counter_dir + "/../resources/checkpoints/cnn_cp.ckpt"
 
         cp_callback = tf.keras.callbacks.ModelCheckpoint(
             filepath=checkpoint_path, save_weights_only=True, verbose=1
@@ -208,15 +318,16 @@ def run_resnet(
     return training_history, testing_evaluation
 
 
+
 if __name__ == "__main__":
-    model = resnet50()
-    #compile_nalu_fcrn(model)
-
+    model = build_resnet()
+    compile_resnet(model)
+    #resnet50()
     training_hist, _ = run_resnet(
-        model, epochs=10, path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\', image_number=250, validation_split=0.1, checkpointing=False
-    ) 
-    #commented path to run on my pc, take out path to run on others
+        model, epochs=10, image_number=250, path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\',validation_split=0.1, checkpointing=False
+    )
 
+    resnet50()
     import matplotlib.pyplot as plt
 
     plt.plot(training_hist.history["mse"], label="mse")
@@ -225,3 +336,44 @@ if __name__ == "__main__":
     plt.ylabel("Mean Squared Error")
     plt.legend(loc="upper right")
     plt.show()
+
+    resnet50_model = resnet50()
+    resnet50_model.summary()
+    resnet50_model.compile(loss='categorical_crossentropy', optimizer=Adam(learning_rate=1e-3), 
+                       metrics=['acc'])
+
+    batch_size=batch_size # test with 64, 128, 256
+    resnet_train = resnet50_model.fit(train_set_conv, 
+                                  epochs=160, 
+                                  steps_per_epoch=get_dataset_info.shape[0]/batch_size, 
+                                  validation_steps=valid_im.shape[0]/batch_size, 
+                                  validation_data=valid_set_conv, 
+                                  callbacks=[lrdecay])
+    loss = resnet_train.history['loss']
+    v_loss = resnet_train.history['val_loss']
+
+    acc = resnet_train.history['acc']
+    v_acc = resnet_train.history['val_acc']
+
+    epochs = range(len(loss))
+
+    fig = plt.figure(figsize=(9, 5))
+    plt.subplot(1, 2, 1)
+    plt.yscale('log')
+    plt.plot(epochs, loss, linestyle='--', linewidth=3, color='orange', alpha=0.7, label='Train Loss')
+    plt.plot(epochs, v_loss, linestyle='-.', linewidth=2, color='lime', alpha=0.8, label='Valid Loss')
+    plt.ylim(0.3, 100)
+    plt.xlabel('Epochs', fontsize=11)
+    plt.ylabel('Loss', fontsize=12)
+    plt.legend(fontsize=12)
+    plt.subplot(1, 2, 2)
+    plt.plot(epochs, acc, linestyle='--', linewidth=3, color='orange', alpha=0.7, label='Train Acc')
+    plt.plot(epochs, v_acc, linestyle='-.', linewidth=2, color='lime', alpha=0.8, label='Valid Acc') 
+    plt.xlabel('Epochs', fontsize=11)
+    plt.ylabel('Accuracy', fontsize=12)
+    plt.legend(fontsize=12)
+    plt.tight_layout()
+    #plt.savefig('/content/gdrive/My Drive/Colab Notebooks/resnet/train_acc.png', dpi=250)
+    plt.show()
+
+                       
