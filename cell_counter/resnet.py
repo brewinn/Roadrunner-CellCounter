@@ -307,7 +307,7 @@ def evaluate_model(model, name):
     results = model.evaluate(test_im, test_lab, batch_size=1)
 
     # Test against random images
-    df = get_dataset_info()
+    df = get_dataset_info(path)
     df = df.sample(n=50, replace=False)
 
     print("Evaluating against random images...")
@@ -315,7 +315,7 @@ def evaluate_model(model, name):
     results = model.evaluate(test_im, test_lab, batch_size=1)
 
 if __name__ == "__main__":
-    
+    '''
     model = resnet50()
     
     compile_resnet(model)
@@ -323,8 +323,8 @@ if __name__ == "__main__":
     training_hist, _ = run_resnet(
         model, epochs=10, image_number=250, path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\',validation_split=0.1, checkpointing=False
     )
-    
     '''
+    
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     print('High training size, no blur')
     model = resnet50()
@@ -332,10 +332,39 @@ if __name__ == "__main__":
     training_hist, _ = run_resnet(
         model, epochs=10,path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\', image_number=1000, validation_split=0.1, checkpointing=False
     )
-    '''
+    
     evaluate_model(model, 'resnet_h_n')
     
-    
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    print('High training size, no blur')
+    model = resnet50()
+    compile_resnet(model)
+    training_hist, _ = run_resnet(
+        model, epochs=10, path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\', image_number=1000, validation_split=0.1, checkpointing=False
+    )
+    evaluate_model(model, 'cnn_h_n')
+
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    print('Low training size, random blur')
+    model = resnet50()
+    compile_resnet(model)
+    df = get_dataset_info()
+    df = df.sample(n=250, replace=False)
+    training_hist, _ = run_resnet(
+        model, epochs=10,path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\', image_number=250, validation_split=0.1, checkpointing=False, df=df
+    )
+    evaluate_model(model, 'cnn_l_r')
+
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    print('High training size, random blur')
+    model = resnet50()
+    compile_resnet(model)
+    df = get_dataset_info()
+    df = df.sample(n=1000, replace=False)
+    training_hist, _ = run_resnet(
+        model, epochs=10,path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\', image_number=1000, validation_split=0.1, checkpointing=False, df=df
+    )
+    evaluate_model(model, 'cnn_h_r')
     
     
     
