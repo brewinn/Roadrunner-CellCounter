@@ -28,6 +28,7 @@ from typing import List, Tuple
 
 # For image preprocessing
 import numpy as np
+import pandas as pd
 
 # For accessing the dataset
 from cell_counter.import_dataset import get_dataset_info, load_images_from_dataframe
@@ -43,7 +44,9 @@ from keras.callbacks import ModelCheckpoint, LearningRateScheduler
 from keras import backend as keras
 
 
-def unet_preprocess_data(path: str = None, num: int = 2500):
+def unet_preprocess_data(
+            path: str = None, num: int = 2500, df = pd.DataFrame(), split=0.1
+) -> Tuple[Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]:
     """
     Reduce the resolution, and normalize the images in the dataset.
     Modification is in-place.
@@ -51,23 +54,26 @@ def unet_preprocess_data(path: str = None, num: int = 2500):
     Parameters:
     path (str): Path to images.
     num (int): Total number of images to import from the dataset.
+    df (pd.DataFrame): Images to use, if any.
+    split (float): Proportion of images to use for testing.
 
     Returns:
     Tuple[Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]: The
     dataset, including the preprocessed images.
 
     """
-    # Filter to only use images without blur
-    df = get_dataset_info(path)
-    df = df[df['blur'] == 1]
+    if len(df.columns) == 0:
+        # Filter to only use images without blur
+        df = get_dataset_info(path)
+        df = df[df["blur"] == 1]
 
-    # Randomly select 'num' from the remaining images, without replacement
-    df = df.sample(n=num, replace=False)
+        # Randomly select 'num' from the remaining images, without replacement
+        df = df.sample(n=num, replace=False)
 
     # Return images and labels from dataframe
     (training_images, training_labels), (
         testing_images, testing_labels,
-        ) = load_images_from_dataframe(df, path=path, resolution=(128, 128))
+        ) = load_images_from_dataframe(df, path=path, resolution=(128, 128), split=split)
 
     scale = 1 / float(255)
     for index, image in enumerate(training_images):
@@ -263,7 +269,7 @@ def build_modified_unet():
     outputs_ = Dense(64)(outputs_)
     outputs_ = Dense(1, activation="relu")(outputs_)
     
-    model = Model(input=inputs, output = outputs_)
+    model = Model(inputs=inputs, outputs=outputs_)
     return model
 
 
@@ -287,6 +293,7 @@ def run_unet(
     epochs: int = 10,
     validation_split: float = 0.0,
     verbose: int = 2,
+    df:pd.DataFrame = pd.DataFrame()
 ):
     """
     Runs the unet model.
@@ -300,6 +307,7 @@ def run_unet(
     epochs (int): Number of epochs to run.
     validation_split (float): Proportion of images to use as a validation set.
     vebose (int): Verbosity of model training and evaluation.
+    df (pd.DataFrame): Images to use, if any.
 
     Returns:
     training_history: The model's training statistics.
@@ -309,7 +317,7 @@ def run_unet(
     (training_images, training_labels), (
         testing_images,
         testing_labels,
-    ) = unet_preprocess_data(path=path, num=image_number)
+    ) = unet_preprocess_data(path=path, num=image_number, df=df)
     if checkpointing:
         if not checkpoint_path:
             import os
@@ -345,15 +353,7 @@ def run_unet(
     )
     return training_history, testing_evaluation
 
-
-if __name__ == "__main__":
-    model = build_modified_unet()
-    compile_unet(model)
-
-    training_hist, _ = run_unet(
-        model, epochs=10, image_number=250, validation_split=0.1, checkpointing=False
-    )
-
+def evaluate_model(model, name):
     import matplotlib.pyplot as plt
 
     plt.plot(training_hist.history["mse"], label="mse")
@@ -361,4 +361,63 @@ if __name__ == "__main__":
     plt.xlabel("Epoch")
     plt.ylabel("Mean Squared Error")
     plt.legend(loc="upper right")
-    plt.show()
+    plt.savefig(name+'.png')
+
+    # Test against blurless images
+    df = get_dataset_info()
+    df = df[df['blur']==1]
+    df = df.sample(n=50, replace=False)
+
+    print("Evaluating against blurless images...")
+    (_,_),(test_im, test_lab) = unet_preprocess_data(df=df, split=1)
+    results = model.evaluate(test_im, test_lab, batch_size=1)
+
+    # Test against random images
+    df = get_dataset_info()
+    df = df.sample(n=50, replace=False)
+
+    print("Evaluating against random images...")
+    (_,_),(test_im, test_lab) = unet_preprocess_data(df=df, split=1)
+    results = model.evaluate(test_im, test_lab, batch_size=1)
+
+if __name__ == "__main__":
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    print('Low training size, no blur')
+    model = build_modified_unet()
+    compile_unet(model)
+
+    training_hist, _ = run_unet(
+        model, epochs=10, image_number=250, validation_split=0.1, checkpointing=False
+    )
+    evaluate_model(model, 'unet_l_n')
+
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    print('High training size, no blur')
+    model = build_modified_unet()
+    compile_unet(model)
+    training_hist, _ = run_unet(
+        model, epochs=10, image_number=1000, validation_split=0.1, checkpointing=False
+    )
+    evaluate_model(model, 'unet_h_n')
+
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    print('Low training size, random blur')
+    model = build_modified_unet()
+    compile_unet(model)
+    df = get_dataset_info()
+    df = df.sample(n=250, replace=False)
+    training_hist, _ = run_unet(
+        model, epochs=10, image_number=250, validation_split=0.1, checkpointing=False, df=df
+    )
+    evaluate_model(model, 'unet_l_r')
+
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    print('High training size, random blur')
+    model = build_modified_unet()
+    compile_unet(model)
+    df = get_dataset_info()
+    df = df.sample(n=1000, replace=False)
+    training_hist, _ = run_unet(
+        model, epochs=10, image_number=1000, validation_split=0.1, checkpointing=False, df=df
+    )
+    evaluate_model(model, 'unet_h_r')
