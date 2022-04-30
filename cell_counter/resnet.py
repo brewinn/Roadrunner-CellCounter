@@ -324,7 +324,7 @@ if __name__ == "__main__":
         model, epochs=10, image_number=250, path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\',validation_split=0.1, checkpointing=False
     )
     '''
-    
+    path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\'
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     print('High training size, no blur')
     model = resnet50()
@@ -348,7 +348,7 @@ if __name__ == "__main__":
     print('Low training size, random blur')
     model = resnet50()
     compile_resnet(model)
-    df = get_dataset_info()
+    df = get_dataset_info(path)
     df = df.sample(n=250, replace=False)
     training_hist, _ = run_resnet(
         model, epochs=10,path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\', image_number=250, validation_split=0.1, checkpointing=False, df=df
@@ -359,7 +359,7 @@ if __name__ == "__main__":
     print('High training size, random blur')
     model = resnet50()
     compile_resnet(model)
-    df = get_dataset_info()
+    df = get_dataset_info(path)
     df = df.sample(n=1000, replace=False)
     training_hist, _ = run_resnet(
         model, epochs=10,path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\', image_number=1000, validation_split=0.1, checkpointing=False, df=df
