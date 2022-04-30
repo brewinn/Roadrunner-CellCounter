@@ -303,7 +303,7 @@ def evaluate_model(model, name):
     df = df.sample(n=50, replace=False)
 
     print("Evaluating against blurless images...")
-    (_,_),(test_im, test_lab) = resnet_preprocess_data(df=df, split=1)
+    (_,_),(test_im, test_lab) = resnet_preprocess_data(df=df, split=1, path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\')
     results = model.evaluate(test_im, test_lab, batch_size=1)
 
     # Test against random images
@@ -311,7 +311,7 @@ def evaluate_model(model, name):
     df = df.sample(n=50, replace=False)
 
     print("Evaluating against random images...")
-    (_,_),(test_im, test_lab) = resnet_preprocess_data(df=df, split=1)
+    (_,_),(test_im, test_lab) = resnet_preprocess_data(df=df, split=1, path='C:\\Users\\User\\Documents\\BBC005Data\\BBBC005_v1_images\\')
     results = model.evaluate(test_im, test_lab, batch_size=1)
 
 if __name__ == "__main__":
