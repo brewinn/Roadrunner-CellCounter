@@ -183,6 +183,7 @@ def evaluate_model(model, name):
     plt.ylabel("Mean Squared Error")
     plt.legend(loc="upper right")
     plt.savefig(name+'.png')
+    plt.clf()
 
     # Test against blurless images
     df = get_dataset_info()
