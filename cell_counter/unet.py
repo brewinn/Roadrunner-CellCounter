@@ -381,25 +381,25 @@ def evaluate_model(model, name):
     results = model.evaluate(test_im, test_lab, batch_size=1)
 
 if __name__ == "__main__":
-    # print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-    # print('Low training size, no blur')
-    # model = build_modified_unet()
-    # compile_unet(model)
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    print('Low training size, no blur')
+    model = build_modified_unet()
+    compile_unet(model)
 
-    # training_hist, _ = run_unet(
-    #     model, epochs=10, image_number=250, validation_split=0.1, checkpointing=False
-    # )
-    # evaluate_model(model, 'unet_l_n')
+    training_hist, _ = run_unet(
+        model, epochs=10, image_number=250, validation_split=0.1, checkpointing=False
+    )
+    evaluate_model(model, 'unet_l_n')
 
-    # print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-    # print('High training size, no blur')
-    # model = build_modified_unet()
-    # compile_unet(model)
-    # training_hist, _ = run_unet(
-    #     model, epochs=10, image_number=1000, validation_split=0.1, checkpointing=False
-    # )
-    # evaluate_model(model, 'unet_h_n')
-
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
+    print('High training size, no blur')
+    model = build_modified_unet()
+    compile_unet(model)
+    training_hist, _ = run_unet(
+        model, epochs=10, image_number=1000, validation_split=0.1, checkpointing=False
+    )
+    evaluate_model(model, 'unet_h_n')
+    
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     print('Low training size, random blur')
     model = build_modified_unet()
