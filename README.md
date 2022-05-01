@@ -1,7 +1,8 @@
 # Roadrunner-CellCounter 
+[![Tests](https://github.com/brewinn/Roadrunner-CellCounter/actions/workflows/tests.yml/badge.svg)](https://github.com/brewinn/Roadrunner-CellCounter/actions/workflows/tests.yml)
+
 A cell counter using computer vision techniques. 
 
-[![Tests](https://github.com/brewinn/Roadrunner-CellCounter/actions/workflows/tests.yml/badge.svg)](https://github.com/brewinn/Roadrunner-CellCounter/actions/workflows/tests.yml)
 ## Description
 
 An automated cell counter. This project is for CS-3793/5233 AI
@@ -9,6 +10,11 @@ course of UTSA, taught by Dr. Kevin Desai. It was originally intended to work
 on 3D images in collaboration with Dr. Hye Young Lee and team for easier cell
 counting, but this project has been delayed, and will continued in a separate
 repository.
+
+Below is an example, where the raw image is preprocessed, and then the network
+generates a prediction based on the preprocessed image. A CNN model trained on
+2500 images predicts 41.6 cells, the ground truth is 48.
+<img src="resources/preproc.png" width = "600" height = "300">
 
 ## Table of Contents
 
