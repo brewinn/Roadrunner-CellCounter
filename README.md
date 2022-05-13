@@ -57,9 +57,6 @@ from cell_counter.MODEL import build_MODEL, compile_MODEL, run_MODEL
 ```
 which will bring in the three functions necessary to make and run the models.
 
-Some tests have been implemented. They may be run with `python3
-run_tests.py`.
-
 ## Development
 
 Development will utilize a two-dimensional synthetic cell dataset
