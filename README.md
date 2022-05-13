@@ -118,8 +118,7 @@ Below is a list of currently implemented features:
   Zissserman](https://arxiv.org/pdf/1409.1556v6.pdf) and code from
   uestcsongtaoli's [vgg\_net](https://github.com/uestcsongtaoli/vgg_net).
 - Count-Ception: A network utilizing redundant counting predictions, based on
-  the work of [Cohen \textit{et
-  al.}](https://github.com/ieee8023/countception).
+  the work of [Cohen *et al.*](https://github.com/ieee8023/countception).
 
 ## To-do
 
